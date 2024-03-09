@@ -53,6 +53,8 @@ dependencies:
   mocktail: ^1.0.3
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
   hard_analyser: ^1.8.0

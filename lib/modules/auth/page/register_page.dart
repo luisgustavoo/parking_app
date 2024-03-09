@@ -36,6 +36,15 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   @override
+  void dispose() {
+    _cpfController.dispose();
+    _nameController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
       key: _scaffoldMessengerKey,
@@ -101,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 Gap.vertical(16),
                 BlocConsumer<AuthBloc, AuthState>(
-                  bloc: context.get(),
+                  bloc: Injector.get(),
                   listener: (context, state) {
                     if (state.status == AuthStatus.failure) {
                       _scaffoldMessengerKey.currentState!.showSnackBar(
@@ -139,15 +148,15 @@ class _RegisterPageState extends State<RegisterPage> {
                             _formKey.currentState?.validate() ?? false;
 
                         if (valid) {
-                          context.get<AuthBloc>().add(
-                                AuthRegisterEvent(
-                                  name: _nameController.text,
-                                  cpf: _cpfController.text
-                                      .replaceAll('.', '')
-                                      .replaceAll('-', ''),
-                                  password: _passwordController.text,
-                                ),
-                              );
+                          Injector.get<AuthBloc>().add(
+                            AuthRegisterEvent(
+                              name: _nameController.text,
+                              cpf: _cpfController.text
+                                  .replaceAll('.', '')
+                                  .replaceAll('-', ''),
+                              password: _passwordController.text,
+                            ),
+                          );
                         }
                       },
                     );

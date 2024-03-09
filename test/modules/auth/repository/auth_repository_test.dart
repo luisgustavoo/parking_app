@@ -10,6 +10,8 @@ import 'package:parking_app/models/user_model.dart';
 import 'package:parking_app/modules/auth/repository/auth_repository.dart';
 
 import '../../../core/fixture/fixture_reader.dart';
+import '../../../core/local_security_storage/mock_local_security_storage.dart';
+import '../../../core/local_storage/mock_local_storage.dart';
 import '../../../core/log/mock_log.dart';
 import '../../../core/rest_client/mock_rest_client.dart';
 import '../../../core/rest_client/mock_rest_client_exception.dart';
@@ -28,7 +30,11 @@ void main() {
   );
 
   setUp(() {
-    mockRestClient = MockRestClient();
+    mockRestClient = MockRestClient(
+      localSecurityStorage: MockLocalSecurityStorage(),
+      localStorage: MockLocalStorage(),
+      log: MockLog(),
+    );
     mockLog = MockLog();
     authRepository = AuthRepository(restClient: mockRestClient, log: mockLog);
   });
