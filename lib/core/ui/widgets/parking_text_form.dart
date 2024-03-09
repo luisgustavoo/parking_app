@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:parking_app/core/ui/extensions/screen_extension.dart';
+
+class ParkingTextForm extends StatelessWidget {
+  ParkingTextForm({
+    required this.label,
+    this.controller,
+    this.validator,
+    this.obscureText = false,
+    this.suffixIcon,
+    this.prefixIcon,
+    this.textInputType = TextInputType.text,
+    this.textAlign = TextAlign.start,
+    this.inputFormatters,
+    this.onChanged,
+    this.onTap,
+    this.readOnly = false,
+    this.enabled = true,
+    super.key,
+  })  : _obscureTextNotifier = ValueNotifier<bool>(obscureText),
+        assert(
+          !(obscureText == true && suffixIcon != null),
+          'obscureText não pode ser adicionado junto com o suffixIcon',
+        );
+
+  final String label;
+  final TextEditingController? controller;
+  final FormFieldValidator<String>? validator;
+  final bool obscureText;
+  final IconButton? suffixIcon;
+  final Icon? prefixIcon;
+  final ValueNotifier<bool> _obscureTextNotifier;
+  final TextInputType textInputType;
+  final TextAlign textAlign;
+  final List<TextInputFormatter>? inputFormatters;
+  final void Function(String)? onChanged;
+  final void Function()? onTap;
+  final bool readOnly;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: _obscureTextNotifier,
+      builder: (context, value, child) {
+        return TextFormField(
+          key: key,
+          obscureText: value,
+          controller: controller,
+          validator: validator,
+          keyboardType: textInputType,
+          textAlign: textAlign,
+          inputFormatters: inputFormatters,
+          onChanged: onChanged,
+          onTap: onTap,
+          readOnly: readOnly,
+          enabled: enabled,
+          decoration: InputDecoration(
+            hintText: label,
+            prefixIcon: prefixIcon,
+            labelStyle: const TextStyle(color: Colors.red),
+            fillColor: enabled ? null : Colors.grey[300],
+            border: const OutlineInputBorder(),
+            // labelStyle: const TextStyle(color: Constants.textColorDisabled),
+            contentPadding: const EdgeInsets.all(8),
+            suffixIcon: obscureText
+                ? IconButton(
+                    onPressed: () {
+                      _obscureTextNotifier.value = !_obscureTextNotifier.value;
+                    },
+                    icon: Icon(value ? Icons.visibility_off : Icons.visibility),
+                    splashRadius: 20.r,
+                  )
+                : suffixIcon,
+          ),
+        );
+      },
+    );
+  }
+}
