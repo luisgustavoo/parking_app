@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:parking_app/core/exceptions/failure.dart';
 import 'package:parking_app/core/helpers/constants.dart';
 import 'package:parking_app/core/rest_client/local_storages/local_security_storage.dart';
@@ -51,7 +53,12 @@ class AuthService {
   }
 
   Future<void> _saveLocalUser(UserModel user) async {
-    await _localStorage.write(Constants.localUserKey, user);
+    await _localStorage.write(
+      Constants.localUserKey,
+      jsonEncode(
+        user.toMap(),
+      ),
+    );
   }
 
   Future<void> _saveAccessToken(TokenModel tokenModel) async {

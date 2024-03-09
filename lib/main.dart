@@ -3,7 +3,9 @@ import 'package:flutter_getit/flutter_getit.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parking_app/core/application_start_config.dart';
+import 'package:parking_app/core/bindings/aplication_bindings.dart';
 import 'package:parking_app/modules/auth/auth_module.dart';
+import 'package:parking_app/modules/home/home_module.dart';
 import 'package:parking_app/modules/splash/splash_module.dart';
 
 void main() async {
@@ -21,9 +23,11 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       child: FlutterGetIt(
+        bindings: ApplicationBinding(),
         modules: [
           SplashModule(),
           AuthModule(),
+          HomeModule(),
         ],
         builder: (context, routes, flutterGetItNavObserver) {
           return MaterialApp(

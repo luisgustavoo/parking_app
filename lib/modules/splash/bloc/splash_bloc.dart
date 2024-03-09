@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:parking_app/core/helpers/constants.dart';
 import 'package:parking_app/core/rest_client/local_storages/shared_preferences_local_storage_impl.dart';
+import 'package:parking_app/models/user_model.dart';
 
 part 'splash_event.dart';
 part 'splash_state.dart';
@@ -26,12 +29,15 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
           status: SplashStatus.loading,
         ),
       );
-      final user = await _storage.read<bool>(Constants.localUserKey);
 
-      if (user != null) {
+      final localUser = await _storage.read<String>(Constants.localUserKey);
+
+      if (localUser != null) {
+        // final user =
+        //     UserModel.fromMap(jsonDecode(localUser) as Map<String, dynamic>);
         emit(
           state.copyWith(
-            status: SplashStatus.loading,
+            status: SplashStatus.success,
           ),
         );
       } else {

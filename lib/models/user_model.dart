@@ -3,10 +3,10 @@ import 'package:equatable/equatable.dart';
 
 class UserModel extends Equatable {
   const UserModel({
-    required this.id,
     required this.name,
     required this.cpf,
     required this.password,
+    this.id,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -22,7 +22,7 @@ class UserModel extends Equatable {
         json.decode(source) as Map<String, dynamic>,
       );
 
-  final int id;
+  final int? id;
   final String name;
   final String cpf;
   final String password;
