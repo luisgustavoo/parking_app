@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:parking_app/core/exceptions/failure.dart';
@@ -52,7 +54,9 @@ void main() {
     when(
       () => mockLocalStorage.write(
         Constants.localUserKey,
-        userModel,
+        jsonEncode(
+          userModel.toMap(),
+        ),
       ),
     ).thenAnswer((_) async => _);
 
@@ -62,7 +66,9 @@ void main() {
     verify(
       () => mockLocalStorage.write(
         Constants.localUserKey,
-        userModel,
+        jsonEncode(
+          userModel.toMap(),
+        ),
       ),
     ).called(1);
   });
@@ -76,7 +82,9 @@ void main() {
     verifyNever(
       () => mockLocalStorage.write(
         Constants.localUserKey,
-        userModel,
+        jsonEncode(
+          userModel.toMap(),
+        ),
       ),
     );
   });

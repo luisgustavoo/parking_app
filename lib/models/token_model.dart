@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-class TokenModel {
+import 'package:equatable/equatable.dart';
+
+class TokenModel extends Equatable {
   TokenModel({
     required this.accessToken,
     required this.refreshToken,
@@ -31,4 +33,11 @@ class TokenModel {
   }
 
   String toJson() => json.encode(toMap());
+
+  @override
+  List<Object?> get props => [
+        accessToken,
+        refreshToken,
+        type,
+      ];
 }
