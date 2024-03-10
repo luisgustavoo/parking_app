@@ -58,6 +58,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   hard_analyser: ^1.8.0
+  bloc_test: ^9.1.6
 
 
 flutter:

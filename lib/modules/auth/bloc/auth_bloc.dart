@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/widgets.dart';
 import 'package:parking_app/core/exceptions/failure.dart';
 import 'package:parking_app/core/rest_client/logs/log.dart';
 import 'package:parking_app/models/user_model.dart';
@@ -15,7 +14,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required Log log,
   })  : _authService = authService,
         _log = log,
-        super(const AuthState.initial()) {
+        super(AuthInitial()) {
     on<AuthRegisterEvent>(_register);
   }
 
@@ -27,7 +26,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
-      emit(state.copyWith(status: AuthStatus.loading));
+      emit(AuthLoading());
       final userModel = UserModel(
         name: event.name,
         cpf: event.cpf,
@@ -35,12 +34,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       await _authService.register(userModel);
       emit(
-        state.copyWith(
-          status: AuthStatus.success,
-        ),
+        AuthSuccess(),
       );
     } on Exception catch (e, s) {
-      emit(state.copyWith(status: AuthStatus.failure));
+      emit(AuthFailure());
       _log.error('Erro ao registrar o usuário', e, s);
       throw Failure(message: 'Erro ao registrar o usuário');
     }

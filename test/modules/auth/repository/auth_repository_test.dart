@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:parking_app/core/exceptions/failure.dart';
+import 'package:parking_app/core/rest_client/local_storages/local_security_storage.dart';
+import 'package:parking_app/core/rest_client/local_storages/local_storage.dart';
 import 'package:parking_app/core/rest_client/logs/log.dart';
 import 'package:parking_app/core/rest_client/rest_client.dart';
 import 'package:parking_app/models/user_model.dart';
@@ -21,6 +23,8 @@ void main() {
   late RestClient mockRestClient;
   late Log mockLog;
   late AuthRepository authRepository;
+  late LocalStorage mockLocalStorage;
+  late LocalSecurityStorage mockLocalSecurityStorage;
 
   const userModel = UserModel(
     id: 1,
@@ -30,10 +34,12 @@ void main() {
   );
 
   setUp(() {
+    mockLocalSecurityStorage = MockLocalSecurityStorage();
+    mockLocalStorage = MockLocalStorage();
     mockRestClient = MockRestClient(
-      localSecurityStorage: MockLocalSecurityStorage(),
-      localStorage: MockLocalStorage(),
-      log: MockLog(),
+      localSecurityStorage: mockLocalSecurityStorage,
+      localStorage: mockLocalStorage,
+      log: mockLog,
     );
     mockLog = MockLog();
     authRepository = AuthRepository(restClient: mockRestClient, log: mockLog);

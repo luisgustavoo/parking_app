@@ -1,34 +1,16 @@
 part of 'auth_bloc.dart';
 
-enum AuthStatus { initial, loading, success, failure }
-
-class AuthState extends Equatable {
-  const AuthState._({
-    required this.status,
-    this.error,
-  });
-
-  const AuthState.initial()
-      : this._(
-          status: AuthStatus.initial,
-        );
-
-  final AuthStatus status;
-  final Exception? error;
+sealed class AuthState extends Equatable {
+  const AuthState();
 
   @override
-  List<Object?> get props => [
-        status,
-        error,
-      ];
-
-  AuthState copyWith({
-    AuthStatus? status,
-    Exception? error,
-  }) {
-    return AuthState._(
-      status: status ?? this.status,
-      error: error,
-    );
-  }
+  List<Object> get props => [];
 }
+
+final class AuthInitial extends AuthState {}
+
+final class AuthLoading extends AuthState {}
+
+final class AuthSuccess extends AuthState {}
+
+final class AuthFailure extends AuthState {}

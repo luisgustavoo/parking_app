@@ -59,6 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Column(
               children: [
                 ParkingTextForm(
+                  key: const Key('register-cpf'),
                   label: 'CPF',
                   controller: _cpfController,
                   inputFormatters: [
@@ -74,6 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 Gap.vertical(16),
                 ParkingTextForm(
+                  key: const Key('register-name'),
                   label: 'Nome',
                   controller: _nameController,
                   validator: (value) {
@@ -85,6 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 Gap.vertical(16),
                 ParkingTextForm(
+                  key: const Key('register-password'),
                   label: 'Senha',
                   controller: _passwordController,
                   obscureText: true,
@@ -97,6 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 Gap.vertical(16),
                 ParkingTextForm(
+                  key: const Key('register-confirm-password'),
                   label: 'Confirmar Senha',
                   controller: _confirmPasswordController,
                   obscureText: true,
@@ -112,7 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 BlocConsumer<AuthBloc, AuthState>(
                   bloc: Injector.get(),
                   listener: (context, state) {
-                    if (state.status == AuthStatus.failure) {
+                    if (state is AuthFailure) {
                       _scaffoldMessengerKey.currentState!.showSnackBar(
                         ParkingSnackBar.buildSnackBar(
                           content: const Text('Erro ao registrar usuário'),
@@ -125,7 +129,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       );
                     }
 
-                    if (state.status == AuthStatus.success) {
+                    if (state is AuthSuccess) {
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         '/home',
@@ -135,6 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   builder: (context, state) {
                     return ParkingButton(
+                      key: const Key('register-button'),
                       const Text(
                         'Cadastrar',
                         style: TextStyle(
@@ -142,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       width: MediaQuery.sizeOf(context).width,
-                      isLoading: state.status == AuthStatus.loading,
+                      isLoading: state is AuthLoading,
                       onPressed: () {
                         final valid =
                             _formKey.currentState?.validate() ?? false;
