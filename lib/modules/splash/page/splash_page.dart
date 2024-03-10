@@ -15,7 +15,7 @@ class SplashPage extends StatelessWidget {
         if (state.status == SplashStatus.success) {
           Navigator.pushReplacementNamed(
             context,
-            '/home',
+            '/parking',
           );
         }
 

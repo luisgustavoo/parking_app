@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parking_app/core/application_start_config.dart';
 import 'package:parking_app/core/bindings/aplication_binding.dart';
 import 'package:parking_app/modules/auth/auth_module.dart';
-import 'package:parking_app/modules/home/home_module.dart';
+import 'package:parking_app/modules/parking/parking_module.dart';
 import 'package:parking_app/modules/splash/splash_module.dart';
 
 void main() async {
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       modules: [
         SplashModule(),
         AuthModule(),
-        HomeModule(),
+        ParkingModule(),
       ],
       builder: (context, routes, flutterGetItNavObserver) {
         return ScreenUtilInit(

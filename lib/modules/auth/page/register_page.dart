@@ -132,7 +132,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     if (state is AuthSuccess) {
                       Navigator.pushNamedAndRemoveUntil(
                         context,
-                        '/home',
+                        '/parking',
                         (route) => false,
                       );
                     }
