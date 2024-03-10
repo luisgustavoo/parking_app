@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_getit/flutter_getit.dart';
+
 import 'package:parking_app/core/ui/widgets/parking_loading.dart';
 import 'package:parking_app/modules/splash/bloc/splash_bloc.dart';
 
@@ -10,7 +10,6 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<SplashBloc, SplashState>(
-      bloc: context.get<SplashBloc>(),
       listener: (context, state) {
         if (state.status == SplashStatus.success) {
           Navigator.pushReplacementNamed(

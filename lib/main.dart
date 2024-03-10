@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_getit/flutter_getit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parking_app/core/application_start_config.dart';
-import 'package:parking_app/core/bindings/aplication_binding.dart';
-import 'package:parking_app/modules/auth/auth_module.dart';
-import 'package:parking_app/modules/parking/parking_module.dart';
-import 'package:parking_app/modules/splash/splash_module.dart';
+import 'package:parking_app/core/rest_client/dio_rest_client.dart';
+import 'package:parking_app/core/rest_client/local_storages/flutter_secure_storage_local_storage_impl.dart';
+import 'package:parking_app/core/rest_client/local_storages/shared_preferences_local_storage_impl.dart';
+import 'package:parking_app/core/rest_client/logs/log_impl.dart';
+import 'package:parking_app/modules/login/page/login_page.dart';
+import 'package:parking_app/modules/login/repository/login_repository.dart';
+import 'package:parking_app/modules/login/service/login_service.dart';
+import 'package:parking_app/modules/parking/page/parking_page.dart';
+import 'package:parking_app/modules/register/bloc/register_bloc.dart';
+import 'package:parking_app/modules/register/page/register_page.dart';
+import 'package:parking_app/modules/register/repository/register_repository.dart';
+import 'package:parking_app/modules/register/service/register_service.dart';
+import 'package:parking_app/modules/splash/bloc/splash_bloc.dart';
+import 'package:parking_app/modules/splash/page/splash_page.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   await ApplicationStartConfig().configureApp();
@@ -19,20 +30,36 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterGetIt(
-      bindings: ApplicationBinding(),
-      modules: [
-        SplashModule(),
-        AuthModule(),
-        ParkingModule(),
-      ],
-      builder: (context, routes, flutterGetItNavObserver) {
-        return ScreenUtilInit(
+    return ScreenUtilInit(
+      builder: (_, child) {
+        return MultiProvider(
+          providers: [
+            Provider(
+              lazy: false,
+              create: (_) => SharedPreferencesLocalStorageImpl(),
+            ),
+            Provider(
+              lazy: false,
+              create: (_) => FlutterSecureStorageLocalStorageImpl(),
+            ),
+            Provider(
+              lazy: false,
+              create: (_) => LogImpl(),
+            ),
+            Provider(
+              lazy: false,
+              create: (context) => DioRestClient(
+                localSecurityStorage:
+                    context.read<FlutterSecureStorageLocalStorageImpl>(),
+                localStorage: context.read<SharedPreferencesLocalStorageImpl>(),
+                log: context.read<LogImpl>(),
+              ),
+            ),
+          ],
           builder: (context, child) {
             return MaterialApp(
               title: 'Parking',
               // navigatorKey: ParkingNavigator.navigatorKey,
-              navigatorObservers: [flutterGetItNavObserver],
               localizationsDelegates: const [
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
@@ -45,8 +72,81 @@ class MyApp extends StatelessWidget {
                 colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                 useMaterial3: true,
               ),
-
-              routes: routes,
+              initialRoute: '/',
+              routes: {
+                '/': (context) {
+                  return BlocProvider(
+                    create: (context) => SplashBloc(
+                      localStorage:
+                          context.read<SharedPreferencesLocalStorageImpl>(),
+                    )..add(SplashVerifyLocalUserEvent()),
+                    child: const SplashPage(),
+                  );
+                },
+                '/auth/register': (context) {
+                  return MultiProvider(
+                    providers: [
+                      Provider(
+                        create: (context) => RegisterRepository(
+                          restClient: context.read<DioRestClient>(),
+                          log: context.read<LogImpl>(),
+                        ),
+                      ),
+                      Provider(
+                        create: (context) => RegisterService(
+                          registerRepository:
+                              context.read<RegisterRepository>(),
+                          localStorage:
+                              context.read<SharedPreferencesLocalStorageImpl>(),
+                          log: context.read<LogImpl>(),
+                        ),
+                      ),
+                      BlocProvider(
+                        create: (context) => RegisterBloc(
+                          authService: context.read<RegisterService>(),
+                          log: context.read<LogImpl>(),
+                        ),
+                      ),
+                    ],
+                    child: const RegisterPage(),
+                  );
+                },
+                '/auth/login': (context) {
+                  return MultiProvider(
+                    providers: [
+                      Provider(
+                        create: (context) => LoginRepository(
+                          restClient: context.read<DioRestClient>(),
+                          log: context.read<LogImpl>(),
+                        ),
+                      ),
+                      Provider(
+                        create: (context) => LoginService(
+                          loginRepository: context.read<LoginRepository>(),
+                          localSecurityStorage: context
+                              .read<FlutterSecureStorageLocalStorageImpl>(),
+                          localStorage:
+                              context.read<SharedPreferencesLocalStorageImpl>(),
+                          log: context.read<LogImpl>(),
+                        ),
+                      ),
+                      BlocProvider(
+                        create: (context) => RegisterBloc(
+                          authService: context.read<RegisterService>(),
+                          log: context.read<LogImpl>(),
+                        ),
+                      ),
+                    ],
+                    child: const LoginPage(),
+                  );
+                },
+                '/parking': (context) {
+                  return MultiProvider(
+                    providers: [],
+                    child: const ParkingPage(),
+                  );
+                },
+              },
             );
           },
         );

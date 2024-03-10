@@ -8,13 +8,13 @@ part 'splash_event.dart';
 part 'splash_state.dart';
 
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
-  SplashBloc({required SharedPreferencesLocalStorageImpl storage})
-      : _storage = storage,
+  SplashBloc({required SharedPreferencesLocalStorageImpl localStorage})
+      : _localStorage = localStorage,
         super(const SplashState.initial()) {
     on<SplashVerifyLocalUserEvent>(_verifyLocalUser);
   }
 
-  final SharedPreferencesLocalStorageImpl _storage;
+  final SharedPreferencesLocalStorageImpl _localStorage;
 
   Future<void> _verifyLocalUser(
     SplashEvent event,
@@ -27,7 +27,8 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         ),
       );
 
-      final localUser = await _storage.read<String>(Constants.localUserKey);
+      final localUser =
+          await _localStorage.read<String>(Constants.localUserKey);
 
       if (localUser != null) {
         // final user =
