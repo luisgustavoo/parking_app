@@ -91,6 +91,10 @@ class _VehiclesPageState extends State<VehiclesPage> {
       );
 
   Widget _buildSuccessState(List<VehiclesModel> vehiclesList) {
+    if (vehiclesList.isEmpty) {
+      return _emptyPage();
+    }
+
     return ListView.builder(
       itemCount: vehiclesList.length,
       itemBuilder: (context, index) {
@@ -127,5 +131,11 @@ class _VehiclesPageState extends State<VehiclesPage> {
     if (result ?? false) {
       bloc.add(VehiclesFindAllEvent());
     }
+  }
+
+  Widget _emptyPage() {
+    return const Center(
+      child: Text('Nenhum veículo cadastrado'),
+    );
   }
 }

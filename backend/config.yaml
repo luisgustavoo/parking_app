@@ -12,4 +12,8 @@ auth:
        method: get
     - /users:
        method: post
+    - /parking:
+       method: post
+    - /parking-space:
+       method: post
 

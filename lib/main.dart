@@ -13,7 +13,9 @@ import 'package:parking_app/modules/login/bloc/login_bloc.dart';
 import 'package:parking_app/modules/login/page/login_page.dart';
 import 'package:parking_app/modules/login/repository/login_repository.dart';
 import 'package:parking_app/modules/login/service/login_service.dart';
+import 'package:parking_app/modules/parking/bloc/parking_bloc.dart';
 import 'package:parking_app/modules/parking/page/parking_page.dart';
+import 'package:parking_app/modules/parking/repository/parking_repository.dart';
 import 'package:parking_app/modules/register/bloc/register_bloc.dart';
 import 'package:parking_app/modules/register/page/register_page.dart';
 import 'package:parking_app/modules/register/repository/register_repository.dart';
@@ -58,6 +60,18 @@ class MyApp extends StatelessWidget {
                 localStorage: context.read<SharedPreferencesLocalStorageImpl>(),
                 log: context.read<LogImpl>(),
               ),
+            ),
+            Provider(
+              create: (context) => ParkingRepository(
+                restClient: context.read<DioRestClient>(),
+                log: context.read<LogImpl>(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => ParkingBloc(
+                parkingRepository: context.read<ParkingRepository>(),
+                log: context.read<LogImpl>(),
+              )..add(ParkingFindAllEvent()),
             ),
           ],
           builder: (context, child) {

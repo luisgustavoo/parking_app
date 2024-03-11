@@ -7,6 +7,7 @@ import 'package:parking_app/core/ui/widgets/parking_space_card.dart';
 import 'package:parking_app/models/parking_space_model.dart';
 import 'package:parking_app/modules/parking_space/bloc/parking_space_bloc.dart';
 import 'package:parking_app/modules/parking_space/repository/parking_space_repository.dart';
+import 'package:parking_app/modules/ticket/page/parking_space_ticket.dart';
 import 'package:provider/provider.dart';
 
 class ParkingSpaceProvider extends StatelessWidget {
@@ -96,6 +97,14 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
           parkingSpaceModel: parkingSpace,
           isLast: index == parkingSpaceList.length - 1,
           isSecondLast: index == parkingSpaceList.length - 2,
+          onClick: (parkingSpaceModel) async {
+            await showModalBottomSheet<void>(
+              context: context,
+              builder: (context) {
+                return const ParkingSpaceTicket();
+              },
+            );
+          },
         );
       },
     );
