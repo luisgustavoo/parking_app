@@ -2,7 +2,6 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:parking_app/core/ui/widgets/gap.dart';
 import 'package:parking_app/core/ui/widgets/parking_button.dart';
 import 'package:parking_app/core/ui/widgets/parking_snack_bar.dart';
@@ -115,7 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Gap.vertical(16),
                 BlocConsumer<RegisterBloc, RegisterState>(
                   // bloc: Injector.get(),
-                  listener: (context, state) {
+                  listener: (context, state) async {
                     if (state is RegisterFailure) {
                       _scaffoldMessengerKey.currentState!.showSnackBar(
                         ParkingSnackBar.buildSnackBar(
@@ -130,10 +129,21 @@ class _RegisterPageState extends State<RegisterPage> {
                     }
 
                     if (state is RegisterSuccess) {
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        '/parking',
-                        (route) => false,
+                      _scaffoldMessengerKey.currentState!.showSnackBar(
+                        ParkingSnackBar.buildSnackBar(
+                          content:
+                              const Text('Cadastro realizado com sucesso!!'),
+                          backgroundColor: Colors.green,
+                          label: '',
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      );
+
+                      await Future<void>.delayed(const Duration(seconds: 2))
+                          .whenComplete(
+                        () => Navigator.pop(context),
                       );
                     }
                   },
@@ -154,7 +164,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                         if (valid) {
                           context.read<RegisterBloc>().add(
-                                AuthRegisterEvent(
+                                RegisterUserEvent(
                                   name: _nameController.text,
                                   cpf: _cpfController.text
                                       .replaceAll('.', '')

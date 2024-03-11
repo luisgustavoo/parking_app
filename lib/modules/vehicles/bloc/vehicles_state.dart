@@ -5,7 +5,7 @@ extension PatternMatch on VehiclesState {
     required Widget Function() onInitial,
     required Widget Function() onLoading,
     required Widget Function(List<VehiclesModel> vehicleList) onSuccess,
-    required Widget Function(Exception error) onFailure,
+    required Widget Function() onFailure,
   }) {
     final state = this;
 
@@ -17,7 +17,7 @@ extension PatternMatch on VehiclesState {
       case VehiclesSuccess():
         return onSuccess(state.vehicleList);
       case VehiclesFailure():
-        return onFailure(state.error);
+        return onFailure();
       default:
         return const SizedBox.shrink();
     }

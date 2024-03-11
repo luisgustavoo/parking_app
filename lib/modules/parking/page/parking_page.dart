@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parking_app/modules/vehicles/page/vehicles_page.dart';
 
 class ParkingPage extends StatefulWidget {
   const ParkingPage({super.key});
@@ -9,6 +10,14 @@ class ParkingPage extends StatefulWidget {
 
 class _ParkingPageState extends State<ParkingPage> {
   int _currentIndex = 0;
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,13 +25,17 @@ class _ParkingPageState extends State<ParkingPage> {
         title: const Text('Estacionamento'),
       ),
       body: PageView(
+        controller: _pageController,
+        onPageChanged: (value) {
+          setState(() {
+            _currentIndex = value;
+          });
+        },
         children: [
           Container(
             color: Colors.red,
           ),
-          Container(
-            color: Colors.blue,
-          ),
+          const VehiclesPage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -30,10 +43,11 @@ class _ParkingPageState extends State<ParkingPage> {
         elevation: 0,
         currentIndex: _currentIndex,
         onTap: (index) async {
-          setState(() {
-            _currentIndex = index;
-          });
-          // widget.appController.tabIndex = index;
+          await _pageController.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeIn,
+          );
         },
         items: const [
           BottomNavigationBarItem(

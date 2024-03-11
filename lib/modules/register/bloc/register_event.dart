@@ -1,14 +1,14 @@
 part of 'register_bloc.dart';
 
-sealed class AuthEvent extends Equatable {
-  const AuthEvent();
+sealed class RegisterEvent extends Equatable {
+  const RegisterEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class AuthRegisterEvent extends AuthEvent {
-  const AuthRegisterEvent({
+class RegisterUserEvent extends RegisterEvent {
+  const RegisterUserEvent({
     required this.name,
     required this.cpf,
     required this.password,

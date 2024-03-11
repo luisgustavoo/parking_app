@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:parking_app/core/helpers/constants.dart';
 import 'package:parking_app/core/rest_client/local_storages/local_security_storage.dart';
 import 'package:parking_app/core/rest_client/local_storages/local_storage.dart';
+import 'package:parking_app/core/rest_client/local_storages/navigator/parking_navigator.dart';
 import 'package:parking_app/core/rest_client/logs/log.dart';
 import 'package:parking_app/core/rest_client/rest_client.dart';
 
@@ -45,13 +46,13 @@ class AuthInterceptor extends Interceptor {
         handler.reject(
           DioException(
             requestOptions: options,
-            error: 'Expired Token',
+            error: 'Não localizado no storage local',
             type: DioExceptionType.cancel,
           ),
         );
       }
 
-      options.headers['Authorization'] = accessToken;
+      options.headers['Authorization'] = 'Bearer $accessToken';
     } else {
       options.headers.remove('Authorization');
     }
@@ -139,8 +140,11 @@ class AuthInterceptor extends Interceptor {
       }
     } on Exception catch (e, s) {
       _log.error('Erro ao atualizar refresh token', e, s);
+
       await _localSecurityStorage.clear();
       await _localStorage.logout();
+      await ParkingNavigator.to!
+          .pushNamedAndRemoveUntil('/login', (route) => false);
     }
   }
 

@@ -5,8 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parking_app/core/application_start_config.dart';
 import 'package:parking_app/core/rest_client/dio_rest_client.dart';
 import 'package:parking_app/core/rest_client/local_storages/flutter_secure_storage_local_storage_impl.dart';
+import 'package:parking_app/core/rest_client/local_storages/navigator/parking_navigator.dart';
 import 'package:parking_app/core/rest_client/local_storages/shared_preferences_local_storage_impl.dart';
 import 'package:parking_app/core/rest_client/logs/log_impl.dart';
+import 'package:parking_app/modules/login/bloc/login_bloc.dart';
 import 'package:parking_app/modules/login/page/login_page.dart';
 import 'package:parking_app/modules/login/repository/login_repository.dart';
 import 'package:parking_app/modules/login/service/login_service.dart';
@@ -17,6 +19,7 @@ import 'package:parking_app/modules/register/repository/register_repository.dart
 import 'package:parking_app/modules/register/service/register_service.dart';
 import 'package:parking_app/modules/splash/bloc/splash_bloc.dart';
 import 'package:parking_app/modules/splash/page/splash_page.dart';
+import 'package:parking_app/modules/vehicles/page/vehicles_register_page.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -59,7 +62,7 @@ class MyApp extends StatelessWidget {
           builder: (context, child) {
             return MaterialApp(
               title: 'Parking',
-              // navigatorKey: ParkingNavigator.navigatorKey,
+              navigatorKey: ParkingNavigator.navigatorKey,
               localizationsDelegates: const [
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
@@ -103,7 +106,7 @@ class MyApp extends StatelessWidget {
                       ),
                       BlocProvider(
                         create: (context) => RegisterBloc(
-                          authService: context.read<RegisterService>(),
+                          registerService: context.read<RegisterService>(),
                           log: context.read<LogImpl>(),
                         ),
                       ),
@@ -131,8 +134,8 @@ class MyApp extends StatelessWidget {
                         ),
                       ),
                       BlocProvider(
-                        create: (context) => RegisterBloc(
-                          authService: context.read<RegisterService>(),
+                        create: (context) => LoginBloc(
+                          loginService: context.read<LoginService>(),
                           log: context.read<LogImpl>(),
                         ),
                       ),
@@ -140,12 +143,8 @@ class MyApp extends StatelessWidget {
                     child: const LoginPage(),
                   );
                 },
-                '/parking': (context) {
-                  return MultiProvider(
-                    providers: [],
-                    child: const ParkingPage(),
-                  );
-                },
+                '/parking': (context) => const ParkingPage(),
+                '/vehicles/register': (context) => const VehiclesRegisterPage(),
               },
             );
           },
