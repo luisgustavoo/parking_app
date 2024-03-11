@@ -31,4 +31,19 @@ class ParkingSpaceRepository {
       throw Failure(message: 'Erro buscar vagas do estacionamento');
     }
   }
+
+  Future<void> update({
+    required int id,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      await _restClient.auth().put<Map<String, dynamic>>(
+            '/parking-space/$id',
+            data: data,
+          );
+    } on RestClientException catch (e, s) {
+      _log.error('Erro atualizar vaga do estacionamento', e, s);
+      throw Failure(message: 'Erro atualizar vaga do estacionamento');
+    }
+  }
 }

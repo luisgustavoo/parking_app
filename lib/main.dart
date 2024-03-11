@@ -22,7 +22,11 @@ import 'package:parking_app/modules/register/repository/register_repository.dart
 import 'package:parking_app/modules/register/service/register_service.dart';
 import 'package:parking_app/modules/splash/bloc/splash_bloc.dart';
 import 'package:parking_app/modules/splash/page/splash_page.dart';
+import 'package:parking_app/modules/ticket/bloc/register/ticket_register_bloc.dart';
+import 'package:parking_app/modules/ticket/repository/ticket_repository.dart';
+import 'package:parking_app/modules/vehicles/bloc/vehicles_bloc.dart';
 import 'package:parking_app/modules/vehicles/page/vehicles_register_page.dart';
+import 'package:parking_app/modules/vehicles/repository/vehicles_repository.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -72,6 +76,30 @@ class MyApp extends StatelessWidget {
                 parkingRepository: context.read<ParkingRepository>(),
                 log: context.read<LogImpl>(),
               )..add(ParkingFindAllEvent()),
+            ),
+            Provider(
+              create: (context) => VehiclesRepository(
+                restClient: context.read<DioRestClient>(),
+                log: context.read<LogImpl>(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => VehiclesBloc(
+                vehiclesRepository: context.read<VehiclesRepository>(),
+                log: context.read<LogImpl>(),
+              )..add(VehiclesFindAllEvent()),
+            ),
+            Provider(
+              create: (context) => TicketRepository(
+                restClient: context.read<DioRestClient>(),
+                log: context.read<LogImpl>(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => TicketRegisterBloc(
+                ticketRepository: context.read<TicketRepository>(),
+                log: context.read<LogImpl>(),
+              ),
             ),
           ],
           builder: (context, child) {

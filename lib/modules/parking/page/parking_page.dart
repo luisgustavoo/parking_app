@@ -35,7 +35,7 @@ class _ParkingPageState extends State<ParkingPage> {
         },
         children: const [
           KeepAlivePage(child: ParkingSpaceProvider()),
-          KeepAlivePage(child: VehiclesProvider()),
+          KeepAlivePage(child: VehiclesPage()),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

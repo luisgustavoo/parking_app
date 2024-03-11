@@ -93,20 +93,47 @@ class _BuildParkingSpace extends StatelessWidget {
                   style: const TextStyle(
                     color: Colors.grey,
                     fontSize: 12,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
               Gap.horizontal(16),
-              SvgPicture.asset(
-                'assets/icon/icon_car_left.svg',
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SvgPicture.asset(
+                    'assets/icon/icon_car_left.svg',
+                  ),
+                  Gap.vertical(4),
+                  Text(
+                    parkingSpaceModel.vehicle?.model ?? '',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ),
             ],
           )
         : Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              SvgPicture.asset(
-                'assets/icon/icon_car_right.svg',
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SvgPicture.asset(
+                    'assets/icon/icon_car_right.svg',
+                  ),
+                  Gap.vertical(4),
+                  Text(
+                    parkingSpaceModel.vehicle?.model ?? '',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ),
               Gap.horizontal(16),
               RotatedBox(
@@ -117,6 +144,7 @@ class _BuildParkingSpace extends StatelessWidget {
                   style: const TextStyle(
                     color: Colors.grey,
                     fontSize: 12,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),

@@ -7,9 +7,9 @@ class TicketModel extends Equatable {
     required this.entryDataTime,
     required this.vehiclePlate,
     required this.parkingSpaceId,
-    this.amountPaid,
-    this.departureDateTime,
     this.id,
+    this.departureDateTime,
+    this.amountPaid,
   });
 
   factory TicketModel.fromMap(Map<String, dynamic> map) {
@@ -17,14 +17,14 @@ class TicketModel extends Equatable {
       id: map['id'] != null ? map['id'] as int : null,
       entryDataTime:
           DateTime.fromMillisecondsSinceEpoch(map['entry_data_time'] as int),
-      departureDateTime: map['departureDateTime'] != null
+      departureDateTime: map['departure_date_time'] != null
           ? DateTime.fromMillisecondsSinceEpoch(
-              map['departure_date_time'] as int,
-            )
+              map['departure_date_time'] as int)
           : null,
       vehiclePlate: map['vehicle_plate'] as String,
       parkingSpaceId: map['parking_space_id'] as int,
-      amountPaid: map['amount_paid'] as double,
+      amountPaid:
+          map['amount_paid'] != null ? map['amount_paid'] as double : null,
     );
   }
 
@@ -52,12 +52,14 @@ class TicketModel extends Equatable {
   String toJson() => json.encode(toMap());
 
   @override
-  List<Object?> get props => [
-        id,
-        entryDataTime,
-        departureDateTime,
-        vehiclePlate,
-        parkingSpaceId,
-        amountPaid,
-      ];
+  List<Object?> get props {
+    return [
+      id,
+      entryDataTime,
+      departureDateTime,
+      vehiclePlate,
+      parkingSpaceId,
+      amountPaid,
+    ];
+  }
 }

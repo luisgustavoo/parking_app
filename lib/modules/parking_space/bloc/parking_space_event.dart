@@ -8,3 +8,13 @@ sealed class ParkingSpaceEvent extends Equatable {
 }
 
 class ParkingSpaceFindAllEvent extends ParkingSpaceEvent {}
+
+class ParkingSpaceUpdateEvent extends ParkingSpaceEvent {
+  const ParkingSpaceUpdateEvent({
+    required this.id,
+    required this.data,
+  });
+
+  final int id;
+  final Map<String, dynamic> data;
+}

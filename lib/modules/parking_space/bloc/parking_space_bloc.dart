@@ -16,6 +16,7 @@ class ParkingSpaceBloc extends Bloc<ParkingSpaceEvent, ParkingSpaceState> {
         _log = log,
         super(ParkingSpaceInitial()) {
     on<ParkingSpaceFindAllEvent>(_findAll);
+    on<ParkingSpaceUpdateEvent>(_update);
   }
 
   final ParkingSpaceRepository _parkingSpaceRepository;
@@ -32,6 +33,18 @@ class ParkingSpaceBloc extends Bloc<ParkingSpaceEvent, ParkingSpaceState> {
     } on Exception catch (e, s) {
       emit(ParkingSpaceFailure());
       _log.error('Erro buscar vagas do estacionamento', e, s);
+    }
+  }
+
+  Future<void> _update(
+    ParkingSpaceUpdateEvent event,
+    Emitter<ParkingSpaceState> emit,
+  ) async {
+    try {
+      await _parkingSpaceRepository.update(id: event.id, data: event.data);
+    } on Exception catch (e, s) {
+      emit(ParkingSpaceFailure());
+      _log.error('Erro ao atualizar vaga do estacionamento', e, s);
     }
   }
 }

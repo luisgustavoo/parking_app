@@ -16,7 +16,7 @@ class TicketRepository {
 
   Future<TicketModel?> register(TicketModel ticketModel) async {
     try {
-      final response = await _restClient.unAuth().post<Map<String, dynamic>>(
+      final response = await _restClient.auth().post<Map<String, dynamic>>(
             '/ticket',
             data: ticketModel.toMap(),
           );

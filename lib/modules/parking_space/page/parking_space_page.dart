@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking_app/core/rest_client/dio_rest_client.dart';
 import 'package:parking_app/core/rest_client/logs/log_impl.dart';
+import 'package:parking_app/core/ui/widgets/parking_loading.dart';
 import 'package:parking_app/core/ui/widgets/parking_snack_bar.dart';
 import 'package:parking_app/core/ui/widgets/parking_space_card.dart';
 import 'package:parking_app/models/parking_space_model.dart';
+import 'package:parking_app/models/vehicles_model.dart';
 import 'package:parking_app/modules/parking_space/bloc/parking_space_bloc.dart';
 import 'package:parking_app/modules/parking_space/repository/parking_space_repository.dart';
+import 'package:parking_app/modules/ticket/bloc/register/ticket_register_bloc.dart';
 import 'package:parking_app/modules/ticket/page/parking_space_ticket.dart';
 import 'package:provider/provider.dart';
 
@@ -80,7 +83,7 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
   Widget _buildInitialState() => const SizedBox.shrink();
 
   Widget _buildLoadingState() => const Center(
-        child: CircularProgressIndicator(),
+        child: ParkingLoading(),
       );
 
   Widget _buildSuccessState(List<ParkingSpaceModel> parkingSpaceList) {
@@ -98,12 +101,9 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
           isLast: index == parkingSpaceList.length - 1,
           isSecondLast: index == parkingSpaceList.length - 2,
           onClick: (parkingSpaceModel) async {
-            await showModalBottomSheet<void>(
-              context: context,
-              builder: (context) {
-                return const ParkingSpaceTicket();
-              },
-            );
+            if (!parkingSpaceModel.occupied) {
+              _registerVehicleEntry(parkingSpaceModel);
+            }
           },
         );
       },
@@ -111,4 +111,44 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
   }
 
   Widget _buildFailureState() => const SizedBox.shrink();
+
+  Future<void> _registerVehicleEntry(ParkingSpaceModel parkingSpace) async {
+    final parkingSpaceBloc = BlocProvider.of<ParkingSpaceBloc>(context);
+    final result =
+        await showDialog<({TicketRegisterState state, VehiclesModel vehicle})>(
+      context: context,
+      builder: (context) {
+        return ParkingSpaceTicket(
+          parkingSpaceModel: parkingSpace,
+        );
+      },
+    );
+
+    if (result != null) {
+      if (result.state is TicketRegisterFailure) {
+        _scaffoldMessengerKey.currentState?.showSnackBar(
+          ParkingSnackBar.buildSnackBar(
+            content: const Text('Erro registrar ticket'),
+            backgroundColor: Colors.red,
+            label: '',
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        );
+      }
+
+      if (result.state is TicketRegisterSuccess) {
+        final data = <String, dynamic>{
+          'occupied': true,
+          'vehicle': result.vehicle.toMap(),
+        };
+        parkingSpaceBloc
+          ..add(
+            ParkingSpaceUpdateEvent(id: parkingSpace.id!, data: data),
+          )
+          ..add(ParkingSpaceFindAllEvent());
+      }
+    }
+  }
 }

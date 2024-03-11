@@ -118,12 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     builder: (context, state) {
                       return ParkingButton(
-                        const Text(
-                          'Entrar',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
+                        'Entrar',
                         width: MediaQuery.sizeOf(context).width,
                         isLoading: state is LoginLoading,
                         onPressed: () {
@@ -146,12 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   Gap.vertical(16),
                   ParkingButton(
-                    Text(
-                      'Cadastrar',
-                      style: TextStyle(
-                        color: context.primaryColor,
-                      ),
-                    ),
+                    'Cadastrar',
                     style: ParkingButtonStyle.secondary,
                     width: MediaQuery.sizeOf(context).width,
                     onPressed: () {

@@ -5,6 +5,7 @@ import 'package:parking_app/core/rest_client/dio_rest_client.dart';
 import 'package:parking_app/core/rest_client/logs/log_impl.dart';
 import 'package:parking_app/core/ui/widgets/gap.dart';
 import 'package:parking_app/core/ui/widgets/parking_button.dart';
+import 'package:parking_app/core/ui/widgets/parking_loading.dart';
 import 'package:parking_app/core/ui/widgets/parking_snack_bar.dart';
 import 'package:parking_app/core/ui/widgets/parking_text_form.dart';
 import 'package:parking_app/models/vehicles_model.dart';
@@ -133,7 +134,7 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                         ? const SizedBox(
                             width: 10,
                             height: 10,
-                            child: CircularProgressIndicator(),
+                            child: ParkingLoading(),
                           )
                         : const Icon(
                             Icons.delete_outline_outlined,
@@ -260,10 +261,7 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                   },
                   builder: (context, state) {
                     return ParkingButton(
-                      Text(
-                        isUpdate ? 'Atualizar' : 'Cadastrar',
-                        style: const TextStyle(color: Colors.white),
-                      ),
+                      isUpdate ? 'Atualizar' : 'Cadastrar',
                       width: MediaQuery.sizeOf(context).width,
                       isLoading: state is VehiclesRegisterLoading,
                       onPressed: () {

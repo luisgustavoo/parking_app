@@ -1,37 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking_app/core/rest_client/dio_rest_client.dart';
-import 'package:parking_app/core/rest_client/logs/log_impl.dart';
+import 'package:parking_app/core/ui/widgets/parking_loading.dart';
 import 'package:parking_app/core/ui/widgets/parking_snack_bar.dart';
 import 'package:parking_app/models/vehicles_model.dart';
 import 'package:parking_app/modules/vehicles/bloc/vehicles_bloc.dart';
-import 'package:parking_app/modules/vehicles/repository/vehicles_repository.dart';
-import 'package:provider/provider.dart';
-
-class VehiclesProvider extends StatelessWidget {
-  const VehiclesProvider({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider(
-          create: (context) => VehiclesRepository(
-            restClient: context.read<DioRestClient>(),
-            log: context.read<LogImpl>(),
-          ),
-        ),
-        BlocProvider(
-          create: (context) => VehiclesBloc(
-            vehiclesRepository: context.read<VehiclesRepository>(),
-            log: context.read<LogImpl>(),
-          )..add(VehiclesFindAllEvent()),
-        ),
-      ],
-      child: const VehiclesPage(),
-    );
-  }
-}
 
 class VehiclesPage extends StatefulWidget {
   const VehiclesPage({super.key});
@@ -87,7 +59,7 @@ class _VehiclesPageState extends State<VehiclesPage> {
   Widget _buildInitialState() => const SizedBox.shrink();
 
   Widget _buildLoadingState() => const Center(
-        child: CircularProgressIndicator(),
+        child: ParkingLoading(),
       );
 
   Widget _buildSuccessState(List<VehiclesModel> vehiclesList) {
@@ -103,8 +75,14 @@ class _VehiclesPageState extends State<VehiclesPage> {
           title: Text('Placa ${vehicle.plate}'),
           subtitle: Text('Modelo ${vehicle.model}'),
           trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Proprietário'),
+              const Text(
+                'Proprietário',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               Text(vehicle.owner),
             ],
           ),

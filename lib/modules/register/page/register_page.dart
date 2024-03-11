@@ -150,12 +150,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   builder: (context, state) {
                     return ParkingButton(
                       key: const Key('register-button'),
-                      const Text(
-                        'Cadastrar',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
+                      'Cadastrar',
                       width: MediaQuery.sizeOf(context).width,
                       isLoading: state is RegisterLoading,
                       onPressed: () {

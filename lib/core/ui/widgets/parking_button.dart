@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:parking_app/core/ui/extensions/screen_extension.dart';
 import 'package:parking_app/core/ui/extensions/theme_extension.dart';
+import 'package:parking_app/core/ui/widgets/parking_loading.dart';
 
 enum ParkingButtonStyle { primary, secondary }
 
 class ParkingButton extends StatelessWidget {
   ParkingButton(
-    Widget child, {
+    String text, {
     double height = 40,
     double? width = 300,
-    double borderRadius = 20,
+    double borderRadius = 16,
     Color? color,
     VoidCallback? onPressed,
     bool isLoading = false,
     bool disable = false,
     ParkingButtonStyle? style = ParkingButtonStyle.primary,
     super.key,
-  })  : _child = child,
+  })  : _text = text,
         _height = height,
         _width = width,
         _color = color,
@@ -26,7 +27,7 @@ class ParkingButton extends StatelessWidget {
         _style = style,
         _isLoading = ValueNotifier<bool>(isLoading);
 
-  final Widget _child;
+  final String _text;
   final double _height;
   final double? _width;
   final double _borderRadius;
@@ -83,12 +84,12 @@ class ParkingButton extends StatelessWidget {
           ? SizedBox(
               height: 20.h,
               width: 20.w,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 1.w,
-              ),
+              child: const ParkingLoading(),
             )
-          : _child,
+          : Text(
+              _text,
+              style: const TextStyle(color: Colors.white),
+            ),
     );
   }
 
@@ -124,12 +125,12 @@ class ParkingButton extends StatelessWidget {
           ? SizedBox(
               height: 20.h,
               width: 20.w,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 1.w,
-              ),
+              child: const ParkingLoading(),
             )
-          : _child,
+          : Text(
+              _text,
+              style: TextStyle(color: context.primaryColor),
+            ),
     );
   }
 }
