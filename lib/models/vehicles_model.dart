@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
@@ -83,4 +84,22 @@ class VehiclesModel extends Equatable {
         type,
         owner,
       ];
+
+  VehiclesModel copyWith({
+    int? id,
+    String? plate,
+    String? model,
+    String? color,
+    VehiclesType? type,
+    String? owner,
+  }) {
+    return VehiclesModel(
+      id: id ?? this.id,
+      plate: plate ?? this.plate,
+      model: model ?? this.model,
+      color: color ?? this.color,
+      type: type ?? this.type,
+      owner: owner ?? this.owner,
+    );
+  }
 }

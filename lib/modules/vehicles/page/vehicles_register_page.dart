@@ -1,11 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:parking_app/core/rest_client/dio_rest_client.dart';
+import 'package:parking_app/core/rest_client/logs/log_impl.dart';
 import 'package:parking_app/core/ui/widgets/gap.dart';
 import 'package:parking_app/core/ui/widgets/parking_button.dart';
 import 'package:parking_app/core/ui/widgets/parking_snack_bar.dart';
 import 'package:parking_app/core/ui/widgets/parking_text_form.dart';
 import 'package:parking_app/models/vehicles_model.dart';
 import 'package:parking_app/modules/vehicles/bloc/register/vehicles_register_bloc.dart';
+import 'package:parking_app/modules/vehicles/repository/vehicles_register_repository.dart';
+import 'package:provider/provider.dart';
+
+class VehiclesRegisterProvider extends StatelessWidget {
+  const VehiclesRegisterProvider({this.vehiclesModel, super.key});
+  final VehiclesModel? vehiclesModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        Provider(
+          create: (context) => VehiclesRegisterRepository(
+            restClient: context.read<DioRestClient>(),
+            log: context.read<LogImpl>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => VehiclesRegisterBloc(
+            vehiclesRegisterRepository:
+                context.read<VehiclesRegisterRepository>(),
+            log: context.read<LogImpl>(),
+          ),
+        ),
+      ],
+      child: VehiclesRegisterPage(
+        vehiclesModel: vehiclesModel,
+      ),
+    );
+  }
+}
 
 class VehiclesRegisterPage extends StatefulWidget {
   const VehiclesRegisterPage({this.vehiclesModel, super.key});
@@ -24,6 +58,7 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
   late TextEditingController _ownerController;
   late GlobalKey<FormState> _formKey;
   late GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey;
+  bool isUpdate = false;
 
   @override
   void initState() {
@@ -33,6 +68,8 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
     _colorController = TextEditingController(text: widget.vehiclesModel?.color);
     _ownerController = TextEditingController(text: widget.vehiclesModel?.owner);
     _type = widget.vehiclesModel?.type ?? VehiclesType.car;
+
+    isUpdate = widget.vehiclesModel != null;
 
     _formKey = GlobalKey<FormState>();
     _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -55,11 +92,55 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
         appBar: AppBar(
           title: const Text('Cadastrar Veículo'),
           actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.delete_outline_outlined,
-                color: Colors.red,
+            Visibility(
+              visible: isUpdate,
+              child: BlocConsumer<VehiclesRegisterBloc, VehiclesRegisterState>(
+                listener: (context, state) {
+                  if (state is VehiclesRegisterDeletingFailure) {
+                    _scaffoldMessengerKey.currentState!.showSnackBar(
+                      ParkingSnackBar.buildSnackBar(
+                        content: const Text('Erro ao excluir veículo'),
+                        backgroundColor: Colors.red,
+                        label: '',
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  }
+
+                  if (state is VehiclesRegisterDeletingSuccess) {
+                    Navigator.pop(context, true);
+                  }
+                },
+                listenWhen: (previous, current) {
+                  return (previous is VehiclesRegisterDeleting) &&
+                      ((current is VehiclesRegisterDeletingSuccess) ||
+                          (current is VehiclesRegisterDeletingFailure));
+                },
+                builder: (context, state) {
+                  return IconButton(
+                    onPressed: () {
+                      if (isUpdate) {
+                        context.read<VehiclesRegisterBloc>().add(
+                              VehiclesDeleteEvent(
+                                id: widget.vehiclesModel!.id!,
+                              ),
+                            );
+                      }
+                    },
+                    icon: state is VehiclesRegisterDeleting
+                        ? const SizedBox(
+                            width: 10,
+                            height: 10,
+                            child: CircularProgressIndicator(),
+                          )
+                        : const Icon(
+                            Icons.delete_outline_outlined,
+                            color: Colors.red,
+                          ),
+                  );
+                },
               ),
             ),
           ],
@@ -158,8 +239,11 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                     if (state is VehiclesRegisterSuccess) {
                       _scaffoldMessengerKey.currentState!.showSnackBar(
                         ParkingSnackBar.buildSnackBar(
-                          content:
-                              const Text('Cadastro realizado com sucesso!!'),
+                          content: Text(
+                            isUpdate
+                                ? 'Dados atualizados com sucesso!!'
+                                : 'Cadastro realizado com sucesso!!',
+                          ),
                           backgroundColor: Colors.green,
                           label: '',
                           onPressed: () {
@@ -168,17 +252,17 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                         ),
                       );
 
-                      await Future<void>.delayed(const Duration(seconds: 2))
+                      await Future<void>.delayed(const Duration(seconds: 1))
                           .whenComplete(
-                        () => Navigator.pop(context),
+                        () => Navigator.pop(context, true),
                       );
                     }
                   },
                   builder: (context, state) {
                     return ParkingButton(
-                      const Text(
-                        'Cadastrar',
-                        style: TextStyle(color: Colors.white),
+                      Text(
+                        isUpdate ? 'Atualizar' : 'Cadastrar',
+                        style: const TextStyle(color: Colors.white),
                       ),
                       width: MediaQuery.sizeOf(context).width,
                       isLoading: state is VehiclesRegisterLoading,
@@ -187,15 +271,31 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                             _formKey.currentState?.validate() ?? false;
 
                         if (valid) {
-                          context.read<VehiclesRegisterBloc>().add(
-                                VehiclesRegisterVehicleEvent(
-                                  plate: _plateController.text,
-                                  model: _modelController.text,
-                                  color: _colorController.text,
-                                  type: _type,
-                                  owner: _ownerController.text,
-                                ),
-                              );
+                          if (isUpdate) {
+                            context.read<VehiclesRegisterBloc>().add(
+                                  VehiclesUpdateEvent(
+                                    vehiclesModel:
+                                        widget.vehiclesModel!.copyWith(
+                                      id: widget.vehiclesModel!.id,
+                                      plate: _plateController.text,
+                                      model: _modelController.text,
+                                      color: _colorController.text,
+                                      type: _type,
+                                      owner: _ownerController.text,
+                                    ),
+                                  ),
+                                );
+                          } else {
+                            context.read<VehiclesRegisterBloc>().add(
+                                  VehiclesRegisterVehicleEvent(
+                                    plate: _plateController.text,
+                                    model: _modelController.text,
+                                    color: _colorController.text,
+                                    type: _type,
+                                    owner: _ownerController.text,
+                                  ),
+                                );
+                          }
                         }
                       },
                     );

@@ -7,7 +7,7 @@ class TicketModel extends Equatable {
     required this.entryDataTime,
     required this.vehiclePlate,
     required this.parkingSpaceId,
-    required this.amountPaid,
+    this.amountPaid,
     this.departureDateTime,
     this.id,
   });
@@ -36,7 +36,7 @@ class TicketModel extends Equatable {
   final DateTime? departureDateTime;
   final String vehiclePlate;
   final int parkingSpaceId;
-  final double amountPaid;
+  final double? amountPaid;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

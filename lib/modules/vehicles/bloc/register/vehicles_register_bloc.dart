@@ -16,6 +16,8 @@ class VehiclesRegisterBloc
         _log = log,
         super(VehiclesRegisterInitial()) {
     on<VehiclesRegisterVehicleEvent>(_register);
+    on<VehiclesUpdateEvent>(_update);
+    on<VehiclesDeleteEvent>(_delete);
   }
 
   final VehiclesRegisterRepository _vehiclesRegisterRepository;
@@ -39,6 +41,34 @@ class VehiclesRegisterBloc
     } on Exception catch (e, s) {
       emit(VehiclesRegisterFailure());
       _log.error('Erro buscar lista veículos', e, s);
+    }
+  }
+
+  Future<void> _update(
+    VehiclesUpdateEvent event,
+    Emitter<VehiclesRegisterState> emit,
+  ) async {
+    try {
+      emit(VehiclesRegisterLoading());
+      await _vehiclesRegisterRepository.update(event.vehiclesModel);
+      emit(VehiclesRegisterSuccess());
+    } on Exception catch (e, s) {
+      emit(VehiclesRegisterFailure());
+      _log.error('Erro ao atualizar veículo', e, s);
+    }
+  }
+
+  Future<void> _delete(
+    VehiclesDeleteEvent event,
+    Emitter<VehiclesRegisterState> emit,
+  ) async {
+    try {
+      emit(VehiclesRegisterDeleting());
+      await _vehiclesRegisterRepository.delete(event.id);
+      emit(VehiclesRegisterDeletingSuccess());
+    } on Exception catch (e, s) {
+      emit(VehiclesRegisterDeletingFailure());
+      _log.error('Erro ao deletar veículo', e, s);
     }
   }
 }

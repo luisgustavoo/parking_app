@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:parking_app/core/ui/widgets/keep_alive_page.dart';
+import 'package:parking_app/modules/parking_space/page/parking_space_page.dart';
 import 'package:parking_app/modules/vehicles/page/vehicles_page.dart';
 
 class ParkingPage extends StatefulWidget {
@@ -31,11 +33,9 @@ class _ParkingPageState extends State<ParkingPage> {
             _currentIndex = value;
           });
         },
-        children: [
-          Container(
-            color: Colors.red,
-          ),
-          const VehiclesPage(),
+        children: const [
+          KeepAlivePage(child: ParkingSpaceProvider()),
+          KeepAlivePage(child: VehiclesProvider()),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

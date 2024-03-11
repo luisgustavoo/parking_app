@@ -30,4 +30,32 @@ class VehiclesRegisterRepository {
       throw Failure(message: 'Erro register veículo');
     }
   }
+
+  Future<VehiclesModel?> update(VehiclesModel vehiclesModel) async {
+    try {
+      final response = await _restClient.auth().patch<Map<String, dynamic>>(
+            '/vehicles/${vehiclesModel.id}',
+            data: vehiclesModel.toMap(),
+          );
+      if (response.data != null) {
+        return VehiclesModel.fromMap(response.data!);
+      }
+
+      return null;
+    } on RestClientException catch (e, s) {
+      _log.error('Erro ao atualizar veículo', e, s);
+      throw Failure(message: 'Erro ao atualizar veículo');
+    }
+  }
+
+  Future<void> delete(int id) async {
+    try {
+      await _restClient.auth().delete<Map<String, dynamic>>(
+            '/vehicles/$id',
+          );
+    } on RestClientException catch (e, s) {
+      _log.error('Erro ao excluir veículo', e, s);
+      throw Failure(message: 'Erro ao excluir veículo');
+    }
+  }
 }

@@ -8,6 +8,7 @@ import 'package:parking_app/core/rest_client/local_storages/flutter_secure_stora
 import 'package:parking_app/core/rest_client/local_storages/navigator/parking_navigator.dart';
 import 'package:parking_app/core/rest_client/local_storages/shared_preferences_local_storage_impl.dart';
 import 'package:parking_app/core/rest_client/logs/log_impl.dart';
+import 'package:parking_app/models/vehicles_model.dart';
 import 'package:parking_app/modules/login/bloc/login_bloc.dart';
 import 'package:parking_app/modules/login/page/login_page.dart';
 import 'package:parking_app/modules/login/repository/login_repository.dart';
@@ -144,7 +145,15 @@ class MyApp extends StatelessWidget {
                   );
                 },
                 '/parking': (context) => const ParkingPage(),
-                '/vehicles/register': (context) => const VehiclesRegisterPage(),
+                '/vehicles/register': (context) {
+                  final args = ModalRoute.of(context)?.settings.arguments;
+                  if (args != null) {
+                    return VehiclesRegisterProvider(
+                      vehiclesModel: args as VehiclesModel,
+                    );
+                  }
+                  return const VehiclesRegisterProvider();
+                },
               },
             );
           },

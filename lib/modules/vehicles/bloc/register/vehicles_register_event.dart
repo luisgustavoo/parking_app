@@ -22,3 +22,19 @@ class VehiclesRegisterVehicleEvent extends VehiclesRegisterEvent {
   final VehiclesType type;
   final String owner;
 }
+
+class VehiclesUpdateEvent extends VehiclesRegisterEvent {
+  const VehiclesUpdateEvent({
+    required this.vehiclesModel,
+  });
+
+  final VehiclesModel vehiclesModel;
+}
+
+class VehiclesDeleteEvent extends VehiclesRegisterEvent {
+  const VehiclesDeleteEvent({
+    required this.id,
+  });
+
+  final int id;
+}

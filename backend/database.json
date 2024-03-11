@@ -1,1 +1,173 @@
-{"users":[{"id":1,"name":"Test","cpf":"11111111111","password":"123"},{"id":2,"name":"Teste","cpf":"11111111111","password":"123"},{"id":3,"name":"Test 2","cpf":"22222222222","password":"222"},{"id":4,"name":"Test","cpf":"11111111111","password":"123"}],"adm_users":[],"parking":[{"id":1,"name":"Parking","address":"600 Amphitheatre Parkway in Mountain View, California ","number_parking_spaces":10,"hourly_rate":15}],"vehicles":[{"id":1,"plate":"WSE6789","model":"Fiat Mobi Like","color":"Black","type":"car","owner":"John Doe"},{"id":2,"plate":"XPTO","model":"Fiat Uno","color":"Branco","type":"car","owner":"Fulazno"}],"parking-space":[],"ticket":[{"id":1,"entry_data_time":"2024-03-08 08:00:00","departure_date_time":null,"vehicle_plate":"WSE6789","parking_space_id":"43fb10d0-bcb2-1ef9-b7f1-1f00a46a1a7e","amount_paid":45.7},{"id":2,"entry_data_time":"1710115755","departure_date_time":null,"vehicle_plate":"WSE6789","parking_space_id":"43fb10d0-bcb2-1ef9-b7f1-1f00a46a1a7e","amount_paid":45.7},{"id":3,"entry_data_time":"2024-03-10 08:30:00","departure_date_time":null,"vehicle_plate":"WSE6789","parking_space_id":"43fb10d0-bcb2-1ef9-b7f1-1f00a46a1a7e","amount_paid":45.7}],"payment":[{"id":1,"type":"card","value":10.9,"ticket_id":"af645b20-be46-1ef9-8923-113dfd8ad00c"}],"daily-closing":[{"id":1,"amount":200.6,"date":"2024-03-07"}]}
+{
+    "users": [
+        {
+            "id": 1,
+            "name": "Test",
+            "cpf": "11111111111",
+            "password": "123"
+        },
+        {
+            "id": 2,
+            "name": "Teste",
+            "cpf": "11111111111",
+            "password": "123"
+        },
+        {
+            "id": 3,
+            "name": "Test 2",
+            "cpf": "22222222222",
+            "password": "222"
+        },
+        {
+            "id": 4,
+            "name": "Test",
+            "cpf": "11111111111",
+            "password": "123"
+        }
+    ],
+    "adm_users": [],
+    "parking": [
+        {
+            "id": 1,
+            "name": "Parking",
+            "address": "600 Amphitheatre Parkway in Mountain View, California ",
+            "number_parking_spaces": 10,
+            "hourly_rate": 15
+        }
+    ],
+    "vehicles": [
+        {
+            "id": 1,
+            "plate": "WSE6789",
+            "model": "Fiat Mobi Like",
+            "color": "Black",
+            "type": "car",
+            "owner": "John Doe"
+        },
+        {
+            "id": 2,
+            "plate": "XPTO",
+            "model": "Fiat Palio",
+            "color": "Branco",
+            "type": "car",
+            "owner": "Fulazno"
+        },
+        {
+            "id": 3,
+            "plate": "ASD1234",
+            "model": "Corolola Atualizado",
+            "color": "Preta",
+            "type": "car",
+            "owner": "Joao"
+        },
+        {
+            "id": 4,
+            "plate": "QWER2345",
+            "model": "Honda Civic",
+            "color": "Prata",
+            "type": "car",
+            "owner": "Antonio"
+        }
+    ],
+    "parking-space": [
+        {
+            "id": 1,
+            "number": 1,
+            "type": "car",
+            "occupied": true,
+            "car": {
+                "plate": "WSE6789",
+                "model": "Fiat Mobi Like",
+                "color": "Black",
+                "type": "car",
+                "owner": "John Doe"
+            }
+        },
+        {
+            "id": 2,
+            "number": 2,
+            "type": "car",
+            "occupied": false
+        },
+        {
+            "id": 3,
+            "number": 3,
+            "type": "car",
+            "occupied": false
+        },
+        {
+            "id": 4,
+            "number": 4,
+            "type": "car",
+            "occupied": false
+        },
+        {
+            "id": 5,
+            "number": 5,
+            "type": "car",
+            "occupied": false
+        },
+        {
+            "id": 6,
+            "number": 6,
+            "type": "car",
+            "occupied": false
+        },
+        {
+            "id": 7,
+            "number": 7,
+            "type": "car",
+            "occupied": false
+        },
+        {
+            "id": 8,
+            "number": 8,
+            "type": "car",
+            "occupied": false
+        },
+        {
+            "id": 9,
+            "number": 9,
+            "type": "car",
+            "occupied": false
+        },
+        {
+            "id": 10,
+            "number": 1,
+            "type": "car",
+            "occupied": true,
+            "vehicle": {
+                "plate": "WSE6789",
+                "model": "Fiat Mobi Like",
+                "color": "Black",
+                "type": "car",
+                "owner": "John Doe"
+            }
+        }
+    ],
+    "ticket": [
+        {
+            "id": 1,
+            "entry_data_time": "2024-03-10 08:30:00",
+            "departure_date_time": null,
+            "vehicle_plate": "WSE6789",
+            "parking_space_id": 10,
+            "amount_paid": null
+        }
+    ],
+    "payment": [
+        {
+            "id": 1,
+            "type": "card",
+            "value": 10.9,
+            "ticket_id": "af645b20-be46-1ef9-8923-113dfd8ad00c"
+        }
+    ],
+    "daily-closing": [
+        {
+            "id": 1,
+            "amount": 200.6,
+            "date": "2024-03-07"
+        }
+    ]
+}

@@ -51,18 +51,16 @@ class _VehiclesPageState extends State<VehiclesPage> {
         body: BlocListener<VehiclesBloc, VehiclesState>(
           listener: (context, state) {
             if (state is VehiclesFailure) {
-              if (mounted) {
-                _scaffoldMessengerKey.currentState?.showSnackBar(
-                  ParkingSnackBar.buildSnackBar(
-                    content: const Text('Erro ao listar veículos'),
-                    backgroundColor: Colors.red,
-                    label: '',
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                );
-              }
+              _scaffoldMessengerKey.currentState?.showSnackBar(
+                ParkingSnackBar.buildSnackBar(
+                  content: const Text('Erro ao listar veículos'),
+                  backgroundColor: Colors.red,
+                  label: '',
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              );
             }
           },
           child: BlocBuilder<VehiclesBloc, VehiclesState>(
@@ -78,14 +76,7 @@ class _VehiclesPageState extends State<VehiclesPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            final bloc = BlocProvider.of<VehiclesBloc>(context);
-            final result =
-                await Navigator.pushNamed(context, '/vehicles/register')
-                    as bool?;
-
-            if (result ?? false) {
-              bloc.add(VehiclesFindAllEvent());
-            }
+            await _showVehiclesRegisterPage();
           },
           child: const Icon(Icons.add),
         ),
@@ -105,8 +96,17 @@ class _VehiclesPageState extends State<VehiclesPage> {
       itemBuilder: (context, index) {
         final vehicle = vehiclesList[index];
         return ListTile(
-          title: Text(vehicle.plate),
-          subtitle: Text(vehicle.model),
+          title: Text('Placa ${vehicle.plate}'),
+          subtitle: Text('Modelo ${vehicle.model}'),
+          trailing: Column(
+            children: [
+              const Text('Proprietário'),
+              Text(vehicle.owner),
+            ],
+          ),
+          onTap: () async {
+            await _showVehiclesRegisterPage(vehiclesModel: vehicle);
+          },
         );
       },
     );
@@ -114,5 +114,18 @@ class _VehiclesPageState extends State<VehiclesPage> {
 
   Widget _buildFailureState() {
     return const SizedBox.shrink();
+  }
+
+  Future<void> _showVehiclesRegisterPage({VehiclesModel? vehiclesModel}) async {
+    final bloc = BlocProvider.of<VehiclesBloc>(context);
+    final result = await Navigator.pushNamed(
+      context,
+      '/vehicles/register',
+      arguments: vehiclesModel,
+    ) as bool?;
+
+    if (result ?? false) {
+      bloc.add(VehiclesFindAllEvent());
+    }
   }
 }

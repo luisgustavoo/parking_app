@@ -141,7 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       );
 
-                      await Future<void>.delayed(const Duration(seconds: 2))
+                      await Future<void>.delayed(const Duration(seconds: 1))
                           .whenComplete(
                         () => Navigator.pop(context),
                       );

@@ -14,3 +14,9 @@ final class VehiclesRegisterLoading extends VehiclesRegisterState {}
 final class VehiclesRegisterSuccess extends VehiclesRegisterState {}
 
 final class VehiclesRegisterFailure extends VehiclesRegisterState {}
+
+final class VehiclesRegisterDeleting extends VehiclesRegisterState {}
+
+final class VehiclesRegisterDeletingSuccess extends VehiclesRegisterState {}
+
+final class VehiclesRegisterDeletingFailure extends VehiclesRegisterState {}
