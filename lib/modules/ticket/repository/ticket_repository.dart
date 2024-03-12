@@ -30,4 +30,24 @@ class TicketRepository {
       throw Failure(message: 'Erro ao registra ticket');
     }
   }
+
+  Future<TicketModel?> findByParkingSpaceId(int id) async {
+    try {
+      final response = await _restClient.auth().get<List<dynamic>>(
+        '/ticket',
+        queryParameters: {
+          'parking_space_id': id,
+        },
+      );
+      if (response.data != null) {
+        final ticketList = List<Map<String, dynamic>>.from(response.data!);
+        return TicketModel.fromMap(ticketList.first);
+      }
+
+      return null;
+    } on RestClientException catch (e, s) {
+      _log.error('Erro ao buscar ticket', e, s);
+      throw Failure(message: 'Erro ao buscar ticket');
+    }
+  }
 }

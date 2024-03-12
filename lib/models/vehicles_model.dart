@@ -31,6 +31,19 @@ extension EnumToString on VehiclesType {
   }
 }
 
+extension EnumToStringTranslate on VehiclesType {
+  String toStringTypeTranslate() {
+    switch (this) {
+      case VehiclesType.car:
+        return 'carro';
+      case VehiclesType.motorcycle:
+        return 'moto';
+      default:
+        throw ArgumentError('Invalid type: $this');
+    }
+  }
+}
+
 class VehiclesModel extends Equatable {
   const VehiclesModel({
     required this.plate,

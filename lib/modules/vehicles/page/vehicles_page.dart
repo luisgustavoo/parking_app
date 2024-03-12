@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking_app/core/ui/widgets/parking_loading.dart';
+import 'package:parking_app/core/ui/widgets/parking_loading_widget.dart';
 import 'package:parking_app/core/ui/widgets/parking_snack_bar.dart';
 import 'package:parking_app/models/vehicles_model.dart';
 import 'package:parking_app/modules/vehicles/bloc/vehicles_bloc.dart';
@@ -59,7 +59,7 @@ class _VehiclesPageState extends State<VehiclesPage> {
   Widget _buildInitialState() => const SizedBox.shrink();
 
   Widget _buildLoadingState() => const Center(
-        child: ParkingLoading(),
+        child: ParkingLoadingWidget(),
       );
 
   Widget _buildSuccessState(List<VehiclesModel> vehiclesList) {

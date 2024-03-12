@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parking_app/core/ui/extensions/screen_extension.dart';
 import 'package:parking_app/core/ui/extensions/theme_extension.dart';
-import 'package:parking_app/core/ui/widgets/parking_loading.dart';
+import 'package:parking_app/core/ui/widgets/parking_loading_widget.dart';
 
 enum ParkingButtonStyle { primary, secondary }
 
@@ -84,7 +84,7 @@ class ParkingButton extends StatelessWidget {
           ? SizedBox(
               height: 20.h,
               width: 20.w,
-              child: const ParkingLoading(),
+              child: const ParkingLoadingWidget(),
             )
           : Text(
               _text,
@@ -125,7 +125,7 @@ class ParkingButton extends StatelessWidget {
           ? SizedBox(
               height: 20.h,
               width: 20.w,
-              child: const ParkingLoading(),
+              child: const ParkingLoadingWidget(),
             )
           : Text(
               _text,

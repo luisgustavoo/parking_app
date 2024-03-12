@@ -20,6 +20,7 @@ class ParkingBloc extends Bloc<ParkingEvent, ParkingState> {
 
   final ParkingRepository _parkingRepository;
   final Log _log;
+  ParkingModel? parkingModel;
 
   Future<void> _findAll(
     ParkingFindAllEvent event,
@@ -27,11 +28,11 @@ class ParkingBloc extends Bloc<ParkingEvent, ParkingState> {
   ) async {
     try {
       emit(ParkingLoading());
-      final parking = await _parkingRepository.findAll();
-      if (parking == null) {
+      parkingModel = await _parkingRepository.findAll();
+      if (parkingModel == null) {
         throw ParkingNotDataFoundException();
       }
-      emit(ParkingSuccess(parkingModel: parking));
+      emit(ParkingSuccess(parkingModel: parkingModel!));
     } on Exception catch (e, s) {
       emit(ParkingFailure());
       _log.error('Erro buscar dados do estacionamento', e, s);

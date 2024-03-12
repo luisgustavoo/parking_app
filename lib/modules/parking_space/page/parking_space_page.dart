@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking_app/core/rest_client/dio_rest_client.dart';
 import 'package:parking_app/core/rest_client/logs/log_impl.dart';
-import 'package:parking_app/core/ui/widgets/parking_loading.dart';
+import 'package:parking_app/core/ui/widgets/parking_loading_widget.dart';
 import 'package:parking_app/core/ui/widgets/parking_snack_bar.dart';
 import 'package:parking_app/core/ui/widgets/parking_space_card.dart';
 import 'package:parking_app/models/parking_space_model.dart';
@@ -83,7 +83,7 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
   Widget _buildInitialState() => const SizedBox.shrink();
 
   Widget _buildLoadingState() => const Center(
-        child: ParkingLoading(),
+        child: ParkingLoadingWidget(),
       );
 
   Widget _buildSuccessState(List<ParkingSpaceModel> parkingSpaceList) {
@@ -101,8 +101,11 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
           isLast: index == parkingSpaceList.length - 1,
           isSecondLast: index == parkingSpaceList.length - 2,
           onClick: (parkingSpaceModel) async {
-            if (!parkingSpaceModel.occupied) {
-              _registerVehicleEntry(parkingSpaceModel);
+            switch (parkingSpaceModel.occupied) {
+              case true:
+                await _registerVehicleDeparture(parkingSpaceModel);
+              default:
+                await _registerVehicleEntry(parkingSpaceModel);
             }
           },
         );
@@ -150,5 +153,18 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
           ..add(ParkingSpaceFindAllEvent());
       }
     }
+  }
+
+  Future<void> _registerVehicleDeparture(
+    ParkingSpaceModel parkingSpaceModel,
+  ) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        return ParkingSpaceTicket(
+          parkingSpaceModel: parkingSpaceModel,
+        );
+      },
+    );
   }
 }

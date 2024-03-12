@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:parking_app/core/ui/widgets/parking_loading.dart';
+import 'package:parking_app/core/ui/widgets/parking_loading_widget.dart';
 import 'package:parking_app/modules/splash/bloc/splash_bloc.dart';
 
 class SplashPage extends StatelessWidget {
@@ -27,7 +27,7 @@ class SplashPage extends StatelessWidget {
       },
       child: const Scaffold(
         body: Center(
-          child: ParkingLoading(),
+          child: ParkingLoadingWidget(),
         ),
       ),
     );

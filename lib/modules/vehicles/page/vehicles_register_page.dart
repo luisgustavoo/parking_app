@@ -5,7 +5,7 @@ import 'package:parking_app/core/rest_client/dio_rest_client.dart';
 import 'package:parking_app/core/rest_client/logs/log_impl.dart';
 import 'package:parking_app/core/ui/widgets/gap.dart';
 import 'package:parking_app/core/ui/widgets/parking_button.dart';
-import 'package:parking_app/core/ui/widgets/parking_loading.dart';
+import 'package:parking_app/core/ui/widgets/parking_loading_widget.dart';
 import 'package:parking_app/core/ui/widgets/parking_snack_bar.dart';
 import 'package:parking_app/core/ui/widgets/parking_text_form.dart';
 import 'package:parking_app/models/vehicles_model.dart';
@@ -134,7 +134,7 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                         ? const SizedBox(
                             width: 10,
                             height: 10,
-                            child: ParkingLoading(),
+                            child: ParkingLoadingWidget(),
                           )
                         : const Icon(
                             Icons.delete_outline_outlined,

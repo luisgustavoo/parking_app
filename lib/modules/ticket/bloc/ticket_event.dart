@@ -6,3 +6,11 @@ sealed class TicketEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class TicketFindByParkingSpaceIdEvent extends TicketEvent {
+  const TicketFindByParkingSpaceIdEvent({
+    required this.id,
+  });
+
+  final int id;
+}

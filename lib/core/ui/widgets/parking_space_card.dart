@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:parking_app/core/ui/widgets/gap.dart';
 import 'package:parking_app/models/parking_space_model.dart';
+import 'package:parking_app/models/vehicles_model.dart';
 
 class ParkingSpaceCard extends StatefulWidget {
   const ParkingSpaceCard({
@@ -72,12 +75,31 @@ class _BuildParkingSpace extends StatelessWidget {
   }
 
   Widget _buildParkingSpaceEmpty() {
-    return Text(
-      'Vaga ${parkingSpaceModel.number}',
-      style: const TextStyle(
-        color: Colors.grey,
-        fontSize: 20,
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Vaga ${parkingSpaceModel.number}',
+          style: const TextStyle(
+            color: Colors.grey,
+            fontSize: 20,
+          ),
+        ),
+        Text(
+          '(${parkingSpaceModel.type.toStringTypeTranslate()})',
+          style: const TextStyle(
+            color: Colors.grey,
+            fontSize: 12,
+          ),
+        ),
+        const Text(
+          'Livre',
+          style: TextStyle(
+            color: Colors.green,
+            fontSize: 20,
+          ),
+        ),
+      ],
     );
   }
 
@@ -99,12 +121,20 @@ class _BuildParkingSpace extends StatelessWidget {
               ),
               Gap.horizontal(16),
               Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Text(
+                    'Prop: ${parkingSpaceModel.vehicle?.owner}',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   SvgPicture.asset(
                     'assets/icon/icon_car_left.svg',
                   ),
-                  Gap.vertical(4),
                   Text(
                     parkingSpaceModel.vehicle?.model ?? '',
                     style: const TextStyle(
@@ -120,12 +150,19 @@ class _BuildParkingSpace extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Text(
+                    'Prop: ${parkingSpaceModel.vehicle?.owner}',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   SvgPicture.asset(
                     'assets/icon/icon_car_right.svg',
                   ),
-                  Gap.vertical(4),
                   Text(
                     parkingSpaceModel.vehicle?.model ?? '',
                     style: const TextStyle(

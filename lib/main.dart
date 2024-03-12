@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:parking_app/core/application_start_config.dart';
 import 'package:parking_app/core/rest_client/dio_rest_client.dart';
 import 'package:parking_app/core/rest_client/local_storages/flutter_secure_storage_local_storage_impl.dart';
@@ -23,6 +24,7 @@ import 'package:parking_app/modules/register/service/register_service.dart';
 import 'package:parking_app/modules/splash/bloc/splash_bloc.dart';
 import 'package:parking_app/modules/splash/page/splash_page.dart';
 import 'package:parking_app/modules/ticket/bloc/register/ticket_register_bloc.dart';
+import 'package:parking_app/modules/ticket/bloc/ticket_bloc.dart';
 import 'package:parking_app/modules/ticket/repository/ticket_repository.dart';
 import 'package:parking_app/modules/vehicles/bloc/vehicles_bloc.dart';
 import 'package:parking_app/modules/vehicles/page/vehicles_register_page.dart';
@@ -31,6 +33,8 @@ import 'package:provider/provider.dart';
 
 void main() async {
   await ApplicationStartConfig().configureApp();
+
+  Intl.defaultLocale = 'pt_BR';
 
   runApp(const MyApp());
 }
@@ -72,6 +76,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
             BlocProvider(
+              lazy: false,
               create: (context) => ParkingBloc(
                 parkingRepository: context.read<ParkingRepository>(),
                 log: context.read<LogImpl>(),
@@ -97,6 +102,12 @@ class MyApp extends StatelessWidget {
             ),
             BlocProvider(
               create: (context) => TicketRegisterBloc(
+                ticketRepository: context.read<TicketRepository>(),
+                log: context.read<LogImpl>(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => TicketBloc(
                 ticketRepository: context.read<TicketRepository>(),
                 log: context.read<LogImpl>(),
               ),

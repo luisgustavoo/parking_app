@@ -14,8 +14,8 @@ class ParkingModel {
       id: map['id'] as int,
       name: map['name'] as String,
       address: map['address'] as String,
-      numberParkingSpaces: map['numberParkingSpaces'] as int,
-      hourlyRate: map['hourlyRate'] as double,
+      numberParkingSpaces: map['number_parking_spaces'] as int,
+      hourlyRate: map['hourly_rate'] as double,
     );
   }
 
@@ -33,8 +33,8 @@ class ParkingModel {
       'id': id,
       'name': name,
       'address': address,
-      'numberParkingSpaces': numberParkingSpaces,
-      'hourlyRate': hourlyRate,
+      'number_parking_spaces': numberParkingSpaces,
+      'hourly_rate': hourlyRate,
     };
   }
 

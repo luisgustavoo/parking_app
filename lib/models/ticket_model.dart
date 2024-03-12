@@ -18,8 +18,9 @@ class TicketModel extends Equatable {
       entryDataTime:
           DateTime.fromMillisecondsSinceEpoch(map['entry_data_time'] as int),
       departureDateTime: map['departure_date_time'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-              map['departure_date_time'] as int)
+          ? DateTime(
+              map['departure_date_time'] as int,
+            )
           : null,
       vehiclePlate: map['vehicle_plate'] as String,
       parkingSpaceId: map['parking_space_id'] as int,
@@ -42,7 +43,7 @@ class TicketModel extends Equatable {
     return <String, dynamic>{
       'id': id,
       'entry_data_time': entryDataTime.millisecondsSinceEpoch,
-      'departure_date_time': departureDateTime?.millisecondsSinceEpoch,
+      'departure_date_time': departureDateTime?.toLocal(),
       'vehicle_plate': vehiclePlate,
       'parking_space_id': parkingSpaceId,
       'amount_paid': amountPaid,
