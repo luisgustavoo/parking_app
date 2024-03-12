@@ -1,1 +1,139 @@
-{"users":[],"adm_users":[],"parking":[{"id":1,"name":"Parking","address":"Praça Sete de Setembro, s/n - Centro, Belo Horizonte - MG","number_parking_spaces":10,"hourly_rate":15.0}],"vehicles":[{"id":1,"plate":"XPTO 1234","model":"Fiat Mobi Like","color":"Preta","type":"car","owner":"Luis Gustavo"}],"parking-space":[{"id":1,"number":1,"type":"car","occupied":false,"vehicle":null},{"id":2,"number":2,"type":"car","occupied":false,"vehicle":null},{"id":3,"number":3,"type":"car","occupied":false,"vehicle":null},{"id":4,"number":4,"type":"car","occupied":false,"vehicle":null},{"id":5,"number":5,"type":"car","occupied":false,"vehicle":null},{"id":6,"number":6,"type":"car","occupied":false,"vehicle":null},{"id":7,"number":7,"type":"car","occupied":false,"vehicle":null},{"id":8,"number":8,"type":"car","occupied":false,"vehicle":null},{"id":9,"number":9,"type":"car","occupied":false,"vehicle":null},{"id":10,"number":10,"type":"car","occupied":false,"vehicle":null},{"id":11,"number":11,"type":"car","occupied":false,"vehicle":null},{"id":12,"number":12,"type":"car","occupied":false,"vehicle":null},{"id":13,"number":13,"type":"car","occupied":false,"vehicle":null},{"id":14,"number":14,"type":"car","occupied":false,"vehicle":null},{"id":15,"number":15,"type":"car","occupied":false,"vehicle":null},{"id":16,"number":16,"type":"car","occupied":false,"vehicle":null}],"ticket":[{"id":1,"entry_data_time":"2024-03-12 16:23:47.668005","departure_date_time":"2024-03-12 16:23:51.541416","vehicle_plate":"XPTO 1234","parking_space_id":1,"amount_paid":0.0,"payment_type":"money"}],"payment":[{"id":1,"payment_type":"money","value":0.0,"ticket_id":1}],"daily-closing":[{"id":1,"amount":0.0,"date":"2024-03-12 00:00:00.000"}]}
+{
+    "users": [],
+    "adm_users": [],
+    "parking": [
+        {
+            "id": 1,
+            "name": "Parking",
+            "address": "Praça Sete de Setembro, s/n - Centro, Belo Horizonte - MG",
+            "number_parking_spaces": 10,
+            "hourly_rate": 15.0
+        }
+    ],
+    "vehicles": [
+   
+    ],
+    "parking-space": [
+        {
+            "id": 1,
+            "number": 1,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 2,
+            "number": 2,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 3,
+            "number": 3,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 4,
+            "number": 4,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 5,
+            "number": 5,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 6,
+            "number": 6,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 7,
+            "number": 7,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 8,
+            "number": 8,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 9,
+            "number": 9,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 10,
+            "number": 10,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 11,
+            "number": 11,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 12,
+            "number": 12,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 13,
+            "number": 13,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 14,
+            "number": 14,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 15,
+            "number": 15,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        },
+        {
+            "id": 16,
+            "number": 16,
+            "type": "car",
+            "occupied": false,
+            "vehicle": null
+        }
+    ],
+    "ticket": [
+
+    ],
+    "payment": [
+    
+    ],
+    "daily-closing": [
+    
+    ]
+}
