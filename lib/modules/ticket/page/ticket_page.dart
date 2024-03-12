@@ -4,9 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:parking_app/core/helpers/calculate.dart';
 import 'package:parking_app/core/ui/widgets/gap.dart';
+import 'package:parking_app/core/ui/widgets/parking_button.dart';
 import 'package:parking_app/core/ui/widgets/parking_loading_widget.dart';
+import 'package:parking_app/core/ui/widgets/parking_snack_bar.dart';
 import 'package:parking_app/models/payment_model.dart';
 import 'package:parking_app/models/ticket_model.dart';
+import 'package:parking_app/modules/daily_closing/bloc/daily_closing_bloc.dart';
 import 'package:parking_app/modules/ticket/bloc/ticket_bloc.dart';
 
 class TicketPage extends StatefulWidget {
@@ -17,6 +20,8 @@ class TicketPage extends StatefulWidget {
 }
 
 class _TicketPageState extends State<TicketPage> {
+  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
   @override
   void initState() {
     super.initState();
@@ -27,18 +32,97 @@ class _TicketPageState extends State<TicketPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocConsumer<TicketBloc, TicketState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          return state.match(
-            onInitial: _buildInitialState,
-            onLoading: _buildLoadingState,
-            onSuccess: _buildSuccessState,
-            onFailure: _buildFailureState,
-          );
-        },
+    return ScaffoldMessenger(
+      key: _scaffoldMessengerKey,
+      child: Scaffold(
+        body: BlocConsumer<TicketBloc, TicketState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            return state.match(
+              onInitial: _buildInitialState,
+              onLoading: _buildLoadingState,
+              onSuccess: _buildSuccessState,
+              onFailure: _buildFailureState,
+            );
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            final result = await showDialog<DailyClosingState>(
+              context: context,
+              builder: _buildDialog,
+            );
+
+            if (result != null) {
+              if (result is DailyClosingFailure) {
+                _scaffoldMessengerKey.currentState?.showSnackBar(
+                  ParkingSnackBar.buildSnackBar(
+                    content: const Text('Erro registrar fechamento diário'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+
+              if (result is DailyClosingFailure) {
+                _scaffoldMessengerKey.currentState?.showSnackBar(
+                  ParkingSnackBar.buildSnackBar(
+                    content: const Text('Fechamento realizado com sucesso!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+            }
+          },
+          child: const Icon(Icons.attach_money_outlined),
+        ),
       ),
+    );
+  }
+
+  AlertDialog _buildDialog(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Deseja fazer o fechamento do dia?'),
+      actions: [
+        BlocConsumer<DailyClosingBloc, DailyClosingState>(
+          listener: (context, state) {
+            if (state is DailyClosingSuccess) {
+              Navigator.pop(context, state);
+            }
+
+            if (state is DailyClosingFailure) {
+              Navigator.pop(context, state);
+            }
+          },
+          builder: (context, state) {
+            return ParkingButton(
+              'Sim',
+              height: 30,
+              width: 50,
+              style: ParkingButtonStyle.secondary,
+              isLoading: state is DailyClosingLoading,
+              onPressed: () {
+                final ticketList = context.read<TicketBloc>().ticketList;
+                if (ticketList?.isNotEmpty ?? false) {
+                  context.read<DailyClosingBloc>().add(
+                        DailyClosingRegisterEvent(
+                          ticketList: ticketList,
+                        ),
+                      );
+                }
+              },
+            );
+          },
+        ),
+        ParkingButton(
+          'Não',
+          height: 30,
+          width: 50,
+          style: ParkingButtonStyle.secondary,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ],
     );
   }
 
@@ -153,9 +237,6 @@ class _TicketPageState extends State<TicketPage> {
               ),
             ],
           ),
-          onTap: () async {
-            // await _showVehiclesRegisterPage(vehiclesModel: vehicle);
-          },
         );
       },
     );

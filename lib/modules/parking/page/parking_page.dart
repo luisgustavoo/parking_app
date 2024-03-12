@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parking_app/core/ui/widgets/keep_alive_page.dart';
+import 'package:parking_app/modules/daily_closing/page/daily_closing_page.dart';
 import 'package:parking_app/modules/parking_space/page/parking_space_page.dart';
 import 'package:parking_app/modules/ticket/page/ticket_page.dart';
 import 'package:parking_app/modules/vehicles/page/vehicles_page.dart';
@@ -26,6 +27,30 @@ class _ParkingPageState extends State<ParkingPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Estacionamento'),
+        // actions: _currentIndex == 2
+        //     ? [
+        //         IconButton(
+        //           onPressed: () async {
+        //             final bloc = BlocProvider.of<TicketBloc>(context);
+        //             final date = await showDatePicker(
+        //               context: context,
+        //               firstDate:
+        //                   DateTime.now().subtract(const Duration(days: 30)),
+        //               lastDate: DateTime.now().add(
+        //                 const Duration(
+        //                   days: 360,
+        //                 ),
+        //               ),
+        //             );
+
+        //             if (date != null) {
+        //               bloc.add(TicketFindByDateEvent(date: date));
+        //             }
+        //           },
+        //           icon: const Icon(Icons.date_range_outlined),
+        //         ),
+        //       ]
+        //     : null,
       ),
       body: PageView(
         controller: _pageController,
@@ -38,6 +63,7 @@ class _ParkingPageState extends State<ParkingPage> {
           KeepAlivePage(child: ParkingSpaceProvider()),
           KeepAlivePage(child: VehiclesPage()),
           KeepAlivePage(child: TicketPage()),
+          KeepAlivePage(child: DailyClosingPage()),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

@@ -11,7 +11,7 @@ class DailyClosingModel {
     return DailyClosingModel(
       id: map['id'] != null ? map['id'] as int : null,
       amount: map['amount'] as double,
-      date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
+      date: DateTime.parse(map['date'].toString()),
     );
   }
 
@@ -26,7 +26,7 @@ class DailyClosingModel {
     return <String, dynamic>{
       'id': id,
       'amount': amount,
-      'date': date.millisecondsSinceEpoch,
+      'date': DateTime(date.year, date.month, date.day).toString(),
     };
   }
 

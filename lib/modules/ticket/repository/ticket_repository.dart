@@ -77,6 +77,31 @@ class TicketRepository {
     }
   }
 
+  Future<List<TicketModel>?> findByDate(DateTime date) async {
+    try {
+      final response = await _restClient.auth().get<List<dynamic>>(
+        '/ticket',
+        queryParameters: {
+          'entry_data_time': date.toLocal().toString(),
+        },
+      );
+      if (response.data != null) {
+        final ticketListSort = List<Map<String, dynamic>>.from(response.data!)
+          ..sort(
+            (a, b) => DateTime.parse(a['entry_data_time'].toString())
+                .compareTo(DateTime.parse(b['entry_data_time'].toString())),
+          );
+
+        return ticketListSort.map(TicketModel.fromMap).toList();
+      }
+
+      return null;
+    } on RestClientException catch (e, s) {
+      _log.error('Erro ao buscar ticket', e, s);
+      throw Failure(message: 'Erro ao buscar ticket');
+    }
+  }
+
   Future<void> update(int id, Map<String, dynamic> data) async {
     try {
       await _restClient.auth().put<Map<String, dynamic>>(

@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'ticket_bloc.dart';
 
 sealed class TicketEvent extends Equatable {
@@ -16,3 +17,10 @@ class TicketFindByParkingSpaceIdEvent extends TicketEvent {
 }
 
 class TicketFindAllEvent extends TicketEvent {}
+
+class TicketFindByDateEvent extends TicketEvent {
+  const TicketFindByDateEvent({
+    required this.date,
+  });
+  final DateTime date;
+}

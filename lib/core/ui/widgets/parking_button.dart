@@ -81,10 +81,9 @@ class ParkingButton extends StatelessWidget {
       ),
       onPressed: isLoading ? null : _onPressed,
       child: isLoading
-          ? SizedBox(
-              height: 20.h,
-              width: 20.w,
-              child: const ParkingLoadingWidget(),
+          ? const Padding(
+              padding: EdgeInsets.all(8),
+              child: ParkingLoadingWidget(),
             )
           : Text(
               _text,

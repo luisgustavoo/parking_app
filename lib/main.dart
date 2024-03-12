@@ -10,6 +10,8 @@ import 'package:parking_app/core/rest_client/local_storages/navigator/parking_na
 import 'package:parking_app/core/rest_client/local_storages/shared_preferences_local_storage_impl.dart';
 import 'package:parking_app/core/rest_client/logs/log_impl.dart';
 import 'package:parking_app/models/vehicles_model.dart';
+import 'package:parking_app/modules/daily_closing/bloc/daily_closing_bloc.dart';
+import 'package:parking_app/modules/daily_closing/repository/daily_closing_repository.dart';
 import 'package:parking_app/modules/login/bloc/login_bloc.dart';
 import 'package:parking_app/modules/login/page/login_page.dart';
 import 'package:parking_app/modules/login/repository/login_repository.dart';
@@ -102,6 +104,18 @@ class MyApp extends StatelessWidget {
             BlocProvider(
               create: (context) => TicketBloc(
                 ticketRepository: context.read<TicketRepository>(),
+                log: context.read<LogImpl>(),
+              ),
+            ),
+            Provider(
+              create: (context) => DailyClosingRepository(
+                restClient: context.read<DioRestClient>(),
+                log: context.read<LogImpl>(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => DailyClosingBloc(
+                dailyClosingRepository: context.read<DailyClosingRepository>(),
                 log: context.read<LogImpl>(),
               ),
             ),

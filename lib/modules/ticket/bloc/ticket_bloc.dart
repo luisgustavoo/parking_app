@@ -17,10 +17,12 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
         super(TicketInitial()) {
     on<TicketFindByParkingSpaceIdEvent>(_findByParkingSpaceId);
     on<TicketFindAllEvent>(_findAll);
+    on<TicketFindByDateEvent>(_findByDate);
   }
 
   final TicketRepository _ticketRepository;
   final Log _log;
+  List<TicketModel>? ticketList = [];
 
   Future<void> _findByParkingSpaceId(
     TicketFindByParkingSpaceIdEvent event,
@@ -42,7 +44,21 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
   ) async {
     try {
       emit(TicketLoading());
-      final ticketList = await _ticketRepository.findAll();
+      ticketList = await _ticketRepository.findAll();
+      emit(TicketSuccess(ticketList: ticketList));
+    } on Exception catch (e, s) {
+      emit(TicketFailure());
+      _log.error('Erro ao buscar ticket', e, s);
+    }
+  }
+
+  Future<void> _findByDate(
+    TicketFindByDateEvent event,
+    Emitter<TicketState> emit,
+  ) async {
+    try {
+      emit(TicketLoading());
+      final ticketList = await _ticketRepository.findByDate(event.date);
       emit(TicketSuccess(ticketList: ticketList));
     } on Exception catch (e, s) {
       emit(TicketFailure());

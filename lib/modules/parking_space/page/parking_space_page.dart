@@ -11,6 +11,7 @@ import 'package:parking_app/models/vehicles_model.dart';
 import 'package:parking_app/modules/parking_space/bloc/parking_space_bloc.dart';
 import 'package:parking_app/modules/parking_space/repository/parking_space_repository.dart';
 import 'package:parking_app/modules/ticket/bloc/register/ticket_register_bloc.dart';
+import 'package:parking_app/modules/ticket/bloc/ticket_bloc.dart';
 import 'package:parking_app/modules/ticket/bloc/update/ticket_update_bloc.dart';
 import 'package:parking_app/modules/ticket/page/parking_space_ticket.dart';
 import 'package:provider/provider.dart';
@@ -154,6 +155,7 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
     ParkingSpaceModel parkingSpaceModel,
   ) async {
     final parkingSpaceBloc = BlocProvider.of<ParkingSpaceBloc>(context);
+    final ticketBloc = BlocProvider.of<TicketBloc>(context);
 
     final result = await showModalBottomSheet<TicketUpdateState>(
       context: context,
@@ -175,6 +177,13 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
             ParkingSpaceUpdateEvent(id: parkingSpaceModel.id!, data: data),
           )
           ..add(ParkingSpaceFindAllEvent());
+
+        await Future<void>.delayed(const Duration(milliseconds: 200))
+            .whenComplete(() {
+          ticketBloc.add(
+            TicketFindAllEvent(),
+          );
+        });
       }
 
       if (result is TicketUpdateFailure) {

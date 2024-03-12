@@ -284,16 +284,32 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
               'Tempo: $time hs ',
             ),
             Gap.vertical(8),
-            Text(
-              'Valor: R\$${NumberFormat.currency(
-                locale: 'pt-BR',
-                name: '',
-                decimalDigits: 2,
-              ).format(amountPaid)} ',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 25,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Valor: R\$${NumberFormat.currency(
+                    locale: 'pt-BR',
+                    name: '',
+                    decimalDigits: 2,
+                  ).format(amountPaid)} ',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25,
+                  ),
+                ),
+                Text(
+                  'Valor por hora (R\$${NumberFormat.currency(
+                    locale: 'pt-BR',
+                    name: '',
+                    decimalDigits: 2,
+                  ).format(valuePerHour)})',
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 10,
+                  ),
+                ),
+              ],
             ),
             Row(
               children: [
