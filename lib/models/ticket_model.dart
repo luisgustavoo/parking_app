@@ -8,6 +8,7 @@ class TicketModel extends Equatable {
     required this.entryDataTime,
     required this.vehiclePlate,
     required this.parkingSpaceId,
+    required this.date,
     this.id,
     this.departureDateTime,
     this.amountPaid,
@@ -28,6 +29,9 @@ class TicketModel extends Equatable {
       amountPaid:
           map['amount_paid'] != null ? map['amount_paid'] as double : null,
       paymentType: map['payment_type']?.toString().toType(),
+      date: DateTime.parse(
+        map['date'] as String,
+      ),
     );
   }
 
@@ -41,6 +45,7 @@ class TicketModel extends Equatable {
   final int parkingSpaceId;
   final double? amountPaid;
   final PaymentType? paymentType;
+  final DateTime date;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -51,6 +56,7 @@ class TicketModel extends Equatable {
       'parking_space_id': parkingSpaceId,
       'amount_paid': amountPaid,
       'payment_type': paymentType?.toStringType(),
+      'date': DateTime(date.year, date.month, date.day).toLocal().toString(),
     };
   }
 
@@ -66,6 +72,7 @@ class TicketModel extends Equatable {
       parkingSpaceId,
       amountPaid,
       paymentType,
+      date,
     ];
   }
 }

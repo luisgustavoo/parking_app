@@ -82,7 +82,7 @@ class TicketRepository {
       final response = await _restClient.auth().get<List<dynamic>>(
         '/ticket',
         queryParameters: {
-          'entry_data_time': date.toLocal().toString(),
+          'date': date.toLocal().toString(),
         },
       );
       if (response.data != null) {

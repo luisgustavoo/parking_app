@@ -395,6 +395,7 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
         entryDataTime: DateTime.now(),
         parkingSpaceId: widget.parkingSpaceModel.id!,
         vehiclePlate: _selectedVehicle!.plate,
+        date: DateTime.now(),
       );
       context.read<TicketRegisterBloc>().add(
             TicketRegisterTicketEvent(
