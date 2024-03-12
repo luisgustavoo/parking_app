@@ -16,9 +16,10 @@ class DailyClosingRepository {
 
   Future<void> register(DailyClosingModel dailyClosingModel) async {
     try {
+      final data = dailyClosingModel.toMap();
       await _restClient.auth().post<Map<String, dynamic>>(
             '/daily-closing',
-            data: dailyClosingModel.toMap(),
+            data: data,
           );
     } on RestClientException catch (e, s) {
       _log.error('Erro ao fazer fechamento', e, s);

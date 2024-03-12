@@ -61,7 +61,7 @@ class _DailyClosingPageState extends State<DailyClosingPage> {
       );
 
   Widget _buildSuccessState(List<DailyClosingModel>? dailyClosingList) {
-    if (dailyClosingList?.isEmpty ?? false) {
+    if (dailyClosingList?.isEmpty ?? true) {
       return _emptyPage();
     }
 
