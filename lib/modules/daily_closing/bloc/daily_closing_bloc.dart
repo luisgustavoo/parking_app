@@ -32,7 +32,21 @@ class DailyClosingBloc extends Bloc<DailyClosingEvent, DailyClosingState> {
       emit(DailyClosingLoading());
       var sum = 0.0;
 
-      for (final ticket in event.ticketList ?? <TicketModel>[]) {
+      dailyClosingList = await _dailyClosingRepository.findAll();
+
+      if (dailyClosingList?.isNotEmpty ?? false) {
+        final exist = dailyClosingList!.any(
+          (element) => element.date == event.filteredDate,
+        );
+
+        if (exist) {
+          emit(DailyClosingFailure());
+          add(DailyClosingFindAllEvent());
+          return;
+        }
+      }
+
+      for (final ticket in event.ticketList) {
         sum += ticket.amountPaid ?? 0.0;
       }
       final dailyClosing = DailyClosingModel(

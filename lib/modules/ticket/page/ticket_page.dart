@@ -26,7 +26,11 @@ class _TicketPageState extends State<TicketPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<TicketBloc>().add(TicketFindAllEvent());
+      context.read<TicketBloc>().add(
+            TicketFindByDateEvent(
+              date: DateTime.now(),
+            ),
+          );
     });
   }
 
@@ -63,7 +67,7 @@ class _TicketPageState extends State<TicketPage> {
                 );
               }
 
-              if (result is DailyClosingFailure) {
+              if (result is DailyClosingSuccess) {
                 _scaffoldMessengerKey.currentState?.showSnackBar(
                   ParkingSnackBar.buildSnackBar(
                     content: const Text('Fechamento realizado com sucesso!'),
@@ -86,11 +90,15 @@ class _TicketPageState extends State<TicketPage> {
         BlocConsumer<DailyClosingBloc, DailyClosingState>(
           listener: (context, state) {
             if (state is DailyClosingSuccess) {
-              Navigator.pop(context, state);
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context, state);
+              }
             }
 
             if (state is DailyClosingFailure) {
-              Navigator.pop(context, state);
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context, state);
+              }
             }
           },
           builder: (context, state) {
@@ -102,12 +110,18 @@ class _TicketPageState extends State<TicketPage> {
               isLoading: state is DailyClosingLoading,
               onPressed: () {
                 final ticketList = context.read<TicketBloc>().ticketList;
-                if (ticketList?.isNotEmpty ?? false) {
+                final filteredDate = context.read<TicketBloc>().filteredDate;
+                if ((ticketList?.isNotEmpty ?? false) && filteredDate != null) {
                   context.read<DailyClosingBloc>().add(
                         DailyClosingRegisterEvent(
-                          ticketList: ticketList,
+                          ticketList: ticketList!,
+                          filteredDate: filteredDate,
                         ),
                       );
+                } else {
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  }
                 }
               },
             );

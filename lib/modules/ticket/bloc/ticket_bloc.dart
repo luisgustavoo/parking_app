@@ -23,6 +23,7 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
   final TicketRepository _ticketRepository;
   final Log _log;
   List<TicketModel>? ticketList = [];
+  DateTime? filteredDate;
 
   Future<void> _findByParkingSpaceId(
     TicketFindByParkingSpaceIdEvent event,
@@ -58,7 +59,12 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
   ) async {
     try {
       emit(TicketLoading());
-      final ticketList = await _ticketRepository.findByDate(event.date);
+      filteredDate = DateTime(
+        event.date.year,
+        event.date.month,
+        event.date.day,
+      );
+      ticketList = await _ticketRepository.findByDate(filteredDate!);
       emit(TicketSuccess(ticketList: ticketList));
     } on Exception catch (e, s) {
       emit(TicketFailure());

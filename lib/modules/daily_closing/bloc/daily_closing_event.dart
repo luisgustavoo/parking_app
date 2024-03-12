@@ -10,8 +10,10 @@ sealed class DailyClosingEvent extends Equatable {
 class DailyClosingRegisterEvent extends DailyClosingEvent {
   const DailyClosingRegisterEvent({
     required this.ticketList,
+    required this.filteredDate,
   });
-  final List<TicketModel>? ticketList;
+  final List<TicketModel> ticketList;
+  final DateTime filteredDate;
 }
 
 class DailyClosingFindAllEvent extends DailyClosingEvent {}

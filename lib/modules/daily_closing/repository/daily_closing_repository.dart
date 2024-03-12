@@ -16,10 +16,9 @@ class DailyClosingRepository {
 
   Future<void> register(DailyClosingModel dailyClosingModel) async {
     try {
-      final data = dailyClosingModel.toMap();
       await _restClient.auth().post<Map<String, dynamic>>(
             '/daily-closing',
-            data: data,
+            data: dailyClosingModel.toMap(),
           );
     } on RestClientException catch (e, s) {
       _log.error('Erro ao fazer fechamento', e, s);
@@ -34,8 +33,12 @@ class DailyClosingRepository {
           );
 
       if (response.data != null) {
-        final dailyClosingList =
-            List<Map<String, dynamic>>.from(response.data!);
+        final dailyClosingList = List<Map<String, dynamic>>.from(response.data!)
+          ..sort(
+            (a, b) => DateTime.parse(a['date'].toString())
+                .compareTo(DateTime.parse(b['date'].toString())),
+          );
+
         return dailyClosingList.map(DailyClosingModel.fromMap).toList();
       }
 

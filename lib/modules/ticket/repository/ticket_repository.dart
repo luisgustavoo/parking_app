@@ -88,8 +88,8 @@ class TicketRepository {
       if (response.data != null) {
         final ticketListSort = List<Map<String, dynamic>>.from(response.data!)
           ..sort(
-            (a, b) => DateTime.parse(a['entry_data_time'].toString())
-                .compareTo(DateTime.parse(b['entry_data_time'].toString())),
+            (a, b) => DateTime.parse(b['entry_data_time'].toString())
+                .compareTo(DateTime.parse(a['entry_data_time'].toString())),
           );
 
         return ticketListSort.map(TicketModel.fromMap).toList();
