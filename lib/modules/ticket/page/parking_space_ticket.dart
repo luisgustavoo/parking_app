@@ -233,7 +233,7 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
       'dd/MM/yyyy hh:mm:ss',
     );
 
-    final initialDate = formatDate.format(ticket!.entryDataTime);
+    final initialDate = formatDate.format(ticket.entryDataTime);
 
     final time = Calculate.differenceInTime(
       initialDate: ticket.entryDataTime,
