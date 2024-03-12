@@ -23,7 +23,6 @@ import 'package:parking_app/modules/register/repository/register_repository.dart
 import 'package:parking_app/modules/register/service/register_service.dart';
 import 'package:parking_app/modules/splash/bloc/splash_bloc.dart';
 import 'package:parking_app/modules/splash/page/splash_page.dart';
-import 'package:parking_app/modules/ticket/bloc/register/ticket_register_bloc.dart';
 import 'package:parking_app/modules/ticket/bloc/ticket_bloc.dart';
 import 'package:parking_app/modules/ticket/repository/ticket_repository.dart';
 import 'package:parking_app/modules/vehicles/bloc/vehicles_bloc.dart';
@@ -97,12 +96,6 @@ class MyApp extends StatelessWidget {
             Provider(
               create: (context) => TicketRepository(
                 restClient: context.read<DioRestClient>(),
-                log: context.read<LogImpl>(),
-              ),
-            ),
-            BlocProvider(
-              create: (context) => TicketRegisterBloc(
-                ticketRepository: context.read<TicketRepository>(),
                 log: context.read<LogImpl>(),
               ),
             ),

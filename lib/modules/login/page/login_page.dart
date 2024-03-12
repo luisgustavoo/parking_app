@@ -100,10 +100,6 @@ class _LoginPageState extends State<LoginPage> {
                           ParkingSnackBar.buildSnackBar(
                             content: const Text('Erro ao realizar login'),
                             backgroundColor: Colors.red,
-                            label: '',
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
                           ),
                         );
                       }

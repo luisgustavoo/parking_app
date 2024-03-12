@@ -10,6 +10,7 @@ import 'package:parking_app/models/vehicles_model.dart';
 import 'package:parking_app/modules/parking_space/bloc/parking_space_bloc.dart';
 import 'package:parking_app/modules/parking_space/repository/parking_space_repository.dart';
 import 'package:parking_app/modules/ticket/bloc/register/ticket_register_bloc.dart';
+import 'package:parking_app/modules/ticket/bloc/update/ticket_update_bloc.dart';
 import 'package:parking_app/modules/ticket/page/parking_space_ticket.dart';
 import 'package:provider/provider.dart';
 
@@ -59,10 +60,6 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
                 ParkingSnackBar.buildSnackBar(
                   content: const Text('Erro ao listar vagas de estacionamento'),
                   backgroundColor: Colors.red,
-                  label: '',
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 ),
               );
             }
@@ -115,14 +112,15 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
 
   Widget _buildFailureState() => const SizedBox.shrink();
 
-  Future<void> _registerVehicleEntry(ParkingSpaceModel parkingSpace) async {
+  Future<void> _registerVehicleEntry(
+      ParkingSpaceModel parkingSpaceModel) async {
     final parkingSpaceBloc = BlocProvider.of<ParkingSpaceBloc>(context);
     final result =
         await showDialog<({TicketRegisterState state, VehiclesModel vehicle})>(
       context: context,
       builder: (context) {
-        return ParkingSpaceTicket(
-          parkingSpaceModel: parkingSpace,
+        return ParkingSpaceTicketProvider(
+          parkingSpaceModel: parkingSpaceModel,
         );
       },
     );
@@ -133,10 +131,6 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
           ParkingSnackBar.buildSnackBar(
             content: const Text('Erro registrar ticket'),
             backgroundColor: Colors.red,
-            label: '',
-            onPressed: () {
-              Navigator.pop(context);
-            },
           ),
         );
       }
@@ -148,7 +142,7 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
         };
         parkingSpaceBloc
           ..add(
-            ParkingSpaceUpdateEvent(id: parkingSpace.id!, data: data),
+            ParkingSpaceUpdateEvent(id: parkingSpaceModel.id!, data: data),
           )
           ..add(ParkingSpaceFindAllEvent());
       }
@@ -158,13 +152,38 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
   Future<void> _registerVehicleDeparture(
     ParkingSpaceModel parkingSpaceModel,
   ) async {
-    await showModalBottomSheet<void>(
+    final parkingSpaceBloc = BlocProvider.of<ParkingSpaceBloc>(context);
+
+    final result = await showModalBottomSheet<TicketUpdateState>(
       context: context,
       builder: (context) {
-        return ParkingSpaceTicket(
+        return ParkingSpaceTicketProvider(
           parkingSpaceModel: parkingSpaceModel,
         );
       },
     );
+
+    if (result != null) {
+      if (result is TicketUpdateSuccess) {
+        final data = <String, dynamic>{
+          'occupied': false,
+          'vehicle': null,
+        };
+        parkingSpaceBloc
+          ..add(
+            ParkingSpaceUpdateEvent(id: parkingSpaceModel.id!, data: data),
+          )
+          ..add(ParkingSpaceFindAllEvent());
+      }
+
+      if (result is TicketUpdateFailure) {
+        _scaffoldMessengerKey.currentState?.showSnackBar(
+          ParkingSnackBar.buildSnackBar(
+            content: const Text('Erro finalizar ticket'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 }

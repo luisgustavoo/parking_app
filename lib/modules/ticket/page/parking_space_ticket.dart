@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:parking_app/core/helpers/calculate.dart';
+import 'package:parking_app/core/rest_client/dio_rest_client.dart';
+import 'package:parking_app/core/rest_client/logs/log_impl.dart';
 import 'package:parking_app/core/ui/extensions/theme_extension.dart';
 import 'package:parking_app/core/ui/widgets/gap.dart';
 import 'package:parking_app/core/ui/widgets/parking_button.dart';
@@ -13,10 +14,57 @@ import 'package:parking_app/models/payment_model.dart';
 import 'package:parking_app/models/ticket_model.dart';
 import 'package:parking_app/models/vehicles_model.dart';
 import 'package:parking_app/modules/parking/bloc/parking_bloc.dart';
-
+import 'package:parking_app/modules/payment/bloc/payment_bloc.dart';
+import 'package:parking_app/modules/payment/repository/payment_repository.dart';
 import 'package:parking_app/modules/ticket/bloc/register/ticket_register_bloc.dart';
 import 'package:parking_app/modules/ticket/bloc/ticket_bloc.dart';
+import 'package:parking_app/modules/ticket/bloc/update/ticket_update_bloc.dart';
+import 'package:parking_app/modules/ticket/repository/ticket_repository.dart';
 import 'package:parking_app/modules/vehicles/bloc/vehicles_bloc.dart';
+import 'package:provider/provider.dart';
+
+class ParkingSpaceTicketProvider extends StatelessWidget {
+  const ParkingSpaceTicketProvider({
+    required this.parkingSpaceModel,
+    super.key,
+  });
+  final ParkingSpaceModel parkingSpaceModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => TicketRegisterBloc(
+            ticketRepository: context.read<TicketRepository>(),
+            log: context.read<LogImpl>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => TicketUpdateBloc(
+            ticketRepository: context.read<TicketRepository>(),
+            log: context.read<LogImpl>(),
+          ),
+        ),
+        Provider(
+          create: (context) => PaymentRepository(
+            restClient: context.read<DioRestClient>(),
+            log: context.read<LogImpl>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => PaymentBloc(
+            paymentRepository: context.read<PaymentRepository>(),
+            log: context.read<LogImpl>(),
+          ),
+        ),
+      ],
+      child: ParkingSpaceTicket(
+        parkingSpaceModel: parkingSpaceModel,
+      ),
+    );
+  }
+}
 
 class ParkingSpaceTicket extends StatefulWidget {
   const ParkingSpaceTicket({
@@ -186,13 +234,12 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
     final initialDate = formatDate.format(ticket!.entryDataTime);
 
     final time = Calculate.differenceInTime(
-      initialDate: ticket.entryDataTime.toLocal(),
+      initialDate: ticket.entryDataTime,
     );
 
     final amountPaid = Calculate.amountPaid(
       valuePerHour: valuePerHour,
-      minutes:
-          DateTime.now().difference(ticket.entryDataTime.toLocal()).inMinutes,
+      minutes: DateTime.now().difference(ticket.entryDataTime).inMinutes,
     );
 
     return Container(
@@ -213,7 +260,7 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${widget.parkingSpaceModel.vehicle?.model ?? ''}',
+                      '${widget.parkingSpaceModel.vehicle?.model}',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
@@ -221,15 +268,9 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
                     ),
                     Text(
                       'Placa: ${widget.parkingSpaceModel.vehicle?.plate ?? ''}',
-                      // style: const TextStyle(
-                      //   fontWeight: FontWeight.bold,
-                      // ),
                     ),
                     Text(
                       'Proprietário: ${widget.parkingSpaceModel.vehicle?.owner ?? ''}',
-                      // style: const TextStyle(
-                      //   fontWeight: FontWeight.bold,
-                      // ),
                     ),
                   ],
                 ),
@@ -278,8 +319,48 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
               ],
             ),
             Gap.vertical(16),
-            ParkingButton(
-              'Registar Saída',
+            BlocConsumer<TicketUpdateBloc, TicketUpdateState>(
+              listener: (context, state) {
+                if (state is TicketUpdateFailure) {
+                  Navigator.pop(
+                    context,
+                    state,
+                  );
+                }
+                if (state is TicketUpdateSuccess) {
+                  Navigator.pop(
+                    context,
+                    state,
+                  );
+                }
+              },
+              builder: (context, state) {
+                return ParkingButton(
+                  'Registar Saída',
+                  isLoading: state is TicketUpdateLoading,
+                  onPressed: () {
+                    final data = <String, dynamic>{
+                      'departure_date_time': DateTime.now().toString(),
+                      'amount_paid': amountPaid,
+                    };
+                    context.read<TicketUpdateBloc>().add(
+                          TicketUpdateUpdateTicketEvent(
+                            id: ticket.id!,
+                            data: data,
+                          ),
+                        );
+
+                    final payment = PaymentModel(
+                      paymentType: _type,
+                      value: amountPaid,
+                      ticketId: ticket.id!,
+                    );
+                    context.read<PaymentBloc>().add(
+                          PaymentRegisterEvent(paymentModel: payment),
+                        );
+                  },
+                );
+              },
             ),
           ],
         ),

@@ -120,10 +120,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         ParkingSnackBar.buildSnackBar(
                           content: const Text('Erro ao registrar usuário'),
                           backgroundColor: Colors.red,
-                          label: '',
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
                         ),
                       );
                     }
@@ -134,10 +130,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           content:
                               const Text('Cadastro realizado com sucesso!!'),
                           backgroundColor: Colors.green,
-                          label: '',
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
                         ),
                       );
 

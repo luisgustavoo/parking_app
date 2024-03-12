@@ -7,8 +7,8 @@ class ParkingSnackBar {
   static SnackBar buildSnackBar({
     required Widget content,
     required Color backgroundColor,
-    required String label,
-    required VoidCallback onPressed,
+    VoidCallback? onPressed,
+    String? label,
     Key? key,
   }) {
     return SnackBar(
@@ -21,9 +21,9 @@ class ParkingSnackBar {
         borderRadius: BorderRadius.circular(5.r),
       ),
       action: SnackBarAction(
-        label: label,
+        label: label ?? '',
         textColor: Colors.white,
-        onPressed: onPressed,
+        onPressed: onPressed ?? () {},
       ),
     );
   }

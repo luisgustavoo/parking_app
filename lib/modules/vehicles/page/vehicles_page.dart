@@ -27,10 +27,6 @@ class _VehiclesPageState extends State<VehiclesPage> {
                 ParkingSnackBar.buildSnackBar(
                   content: const Text('Erro ao listar veículos'),
                   backgroundColor: Colors.red,
-                  label: '',
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 ),
               );
             }

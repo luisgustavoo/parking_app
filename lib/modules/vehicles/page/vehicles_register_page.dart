@@ -102,7 +102,7 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                       ParkingSnackBar.buildSnackBar(
                         content: const Text('Erro ao excluir veículo'),
                         backgroundColor: Colors.red,
-                        label: '',
+                        label: 'Fechar',
                         onPressed: () {
                           Navigator.pop(context);
                         },
@@ -229,7 +229,7 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                         ParkingSnackBar.buildSnackBar(
                           content: const Text('Erro ao registrar veículo'),
                           backgroundColor: Colors.red,
-                          label: '',
+                          label: 'Fechar',
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -246,10 +246,6 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                                 : 'Cadastro realizado com sucesso!!',
                           ),
                           backgroundColor: Colors.green,
-                          label: '',
-                          onPressed: () {
-                            Navigator.pop(context, true);
-                          },
                         ),
                       );
 

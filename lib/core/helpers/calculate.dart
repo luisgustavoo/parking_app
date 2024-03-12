@@ -5,8 +5,7 @@ class Calculate {
     required DateTime initialDate,
     DateTime? finalDate,
   }) {
-    final difference =
-        (finalDate ?? DateTime.now()).difference(initialDate.toLocal());
+    final difference = (finalDate ?? DateTime.now()).difference(initialDate);
 
     final hour = difference.inHours;
     final minutes = difference.inMinutes % 60;

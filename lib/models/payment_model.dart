@@ -17,6 +17,19 @@ extension StringToEnum on String {
   }
 }
 
+extension EnumToString on PaymentType {
+  String toStringType() {
+    switch (this) {
+      case PaymentType.card:
+        return 'card';
+      case PaymentType.money:
+        return 'money';
+      default:
+        throw ArgumentError('Invalid string: $this');
+    }
+  }
+}
+
 class PaymentModel extends Equatable {
   const PaymentModel({
     required this.paymentType,
@@ -45,7 +58,7 @@ class PaymentModel extends Equatable {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'payment_type': paymentType.toString(),
+      'payment_type': paymentType.toStringType(),
       'value': value,
       'ticket_id': ticketId,
     };

@@ -40,14 +40,30 @@ class TicketRepository {
         },
       );
       if (response.data != null) {
-        final ticketList = List<Map<String, dynamic>>.from(response.data!);
-        return TicketModel.fromMap(ticketList.first);
+        final ticketList = List<Map<String, dynamic>>.from(response.data!)
+          ..sort(
+            (a, b) => DateTime.parse(a['entry_data_time'].toString())
+                .compareTo(DateTime.parse(b['entry_data_time'].toString())),
+          );
+        return TicketModel.fromMap(ticketList.last);
       }
 
       return null;
     } on RestClientException catch (e, s) {
       _log.error('Erro ao buscar ticket', e, s);
       throw Failure(message: 'Erro ao buscar ticket');
+    }
+  }
+
+  Future<void> update(int id, Map<String, dynamic> data) async {
+    try {
+      await _restClient.auth().put<Map<String, dynamic>>(
+            '/ticket/$id',
+            data: data,
+          );
+    } on RestClientException catch (e, s) {
+      _log.error('Erro ao atualizar ticket', e, s);
+      throw Failure(message: 'Erro ao atualizar ticket');
     }
   }
 }
