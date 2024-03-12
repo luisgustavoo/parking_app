@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:parking_app/core/ui/extensions/screen_extension.dart';
 import 'package:parking_app/core/ui/widgets/gap.dart';
 import 'package:parking_app/models/parking_space_model.dart';
 import 'package:parking_app/models/vehicles_model.dart';
@@ -35,8 +36,8 @@ class _ParkingSpaceCardState extends State<ParkingSpaceCard> {
       },
       child: Container(
         margin: EdgeInsets.only(
-          left: widget.parkingSpaceModel.number.isEven ? 32 : 0,
-          right: widget.parkingSpaceModel.number.isOdd ? 32 : 0,
+          left: widget.parkingSpaceModel.number.isEven ? 32.w : 0,
+          right: widget.parkingSpaceModel.number.isOdd ? 32.w : 0,
         ),
         decoration: BoxDecoration(
           border: Border(
@@ -105,87 +106,123 @@ class _BuildParkingSpace extends StatelessWidget {
 
   Widget _buildParkingSpaceOccupied() {
     return parkingSpaceModel.number.isOdd
-        ? Row(
-            children: [
-              RotatedBox(
-                quarterTurns: 3,
-                child: Text(
-                  'Vaga ${parkingSpaceModel.number}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
+        ? Padding(
+            padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Prop: ${parkingSpaceModel.vehicle?.owner}',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Gap.horizontal(16),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Prop: ${parkingSpaceModel.vehicle?.owner}',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                Row(
+                  children: [
+                    RotatedBox(
+                      quarterTurns: 3,
+                      child: Text(
+                        'Vaga ${parkingSpaceModel.number}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SvgPicture.asset(
-                    'assets/icon/icon_car_left.svg',
-                  ),
-                  Text(
-                    parkingSpaceModel.vehicle?.model ?? '',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
+                    Gap.horizontal(16),
+                    SvgPicture.asset(
+                      'assets/icon/icon_car_left.svg',
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        parkingSpaceModel.vehicle?.model ?? '',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           )
-        : Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Prop: ${parkingSpaceModel.vehicle?.owner}',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+        : Padding(
+            padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Prop: ${parkingSpaceModel.vehicle?.owner}',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                  SvgPicture.asset(
-                    'assets/icon/icon_car_right.svg',
-                  ),
-                  Text(
-                    parkingSpaceModel.vehicle?.model ?? '',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-              Gap.horizontal(16),
-              RotatedBox(
-                quarterTurns: 3,
-                child: Text(
-                  'Vaga ${parkingSpaceModel.number}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  ],
                 ),
-              ),
-            ],
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icon/icon_car_right.svg',
+                    ),
+                    Gap.horizontal(16),
+                    RotatedBox(
+                      quarterTurns: 3,
+                      child: Text(
+                        'Vaga ${parkingSpaceModel.number}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        parkingSpaceModel.vehicle?.model ?? '',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           );
   }
 }

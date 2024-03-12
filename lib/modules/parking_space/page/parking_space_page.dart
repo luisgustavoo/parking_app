@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking_app/core/rest_client/dio_rest_client.dart';
 import 'package:parking_app/core/rest_client/logs/log_impl.dart';
+import 'package:parking_app/core/ui/extensions/screen_extension.dart';
 import 'package:parking_app/core/ui/widgets/parking_loading_widget.dart';
 import 'package:parking_app/core/ui/widgets/parking_snack_bar.dart';
 import 'package:parking_app/core/ui/widgets/parking_space_card.dart';
@@ -87,9 +88,9 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
     return GridView.builder(
       padding: const EdgeInsets.only(top: 16, bottom: 16),
       itemCount: parkingSpaceList.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        mainAxisExtent: 100,
+        mainAxisExtent: 100.h,
       ),
       itemBuilder: (context, index) {
         final parkingSpace = parkingSpaceList[index];

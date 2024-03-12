@@ -30,6 +30,19 @@ extension EnumToString on PaymentType {
   }
 }
 
+extension EnumToStringTranslate on PaymentType {
+  String toStringTypeTranslate() {
+    switch (this) {
+      case PaymentType.card:
+        return 'Cartão de Crédito';
+      case PaymentType.money:
+        return 'Dinheiro';
+      default:
+        throw ArgumentError('Invalid type: $this');
+    }
+  }
+}
+
 class PaymentModel extends Equatable {
   const PaymentModel({
     required this.paymentType,

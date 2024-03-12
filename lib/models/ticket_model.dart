@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:parking_app/models/payment_model.dart';
 
 class TicketModel extends Equatable {
   const TicketModel({
@@ -10,6 +11,7 @@ class TicketModel extends Equatable {
     this.id,
     this.departureDateTime,
     this.amountPaid,
+    this.paymentType,
   });
 
   factory TicketModel.fromMap(Map<String, dynamic> map) {
@@ -25,6 +27,7 @@ class TicketModel extends Equatable {
       parkingSpaceId: map['parking_space_id'] as int,
       amountPaid:
           map['amount_paid'] != null ? map['amount_paid'] as double : null,
+      paymentType: map['payment_type']?.toString().toType(),
     );
   }
 
@@ -37,6 +40,7 @@ class TicketModel extends Equatable {
   final String vehiclePlate;
   final int parkingSpaceId;
   final double? amountPaid;
+  final PaymentType? paymentType;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -46,6 +50,7 @@ class TicketModel extends Equatable {
       'vehicle_plate': vehiclePlate,
       'parking_space_id': parkingSpaceId,
       'amount_paid': amountPaid,
+      'payment_type': paymentType?.toStringType(),
     };
   }
 
@@ -60,6 +65,7 @@ class TicketModel extends Equatable {
       vehiclePlate,
       parkingSpaceId,
       amountPaid,
+      paymentType,
     ];
   }
 }

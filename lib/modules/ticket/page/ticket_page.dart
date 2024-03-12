@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:parking_app/core/helpers/calculate.dart';
+import 'package:parking_app/core/ui/widgets/gap.dart';
 import 'package:parking_app/core/ui/widgets/parking_loading_widget.dart';
+import 'package:parking_app/models/payment_model.dart';
 import 'package:parking_app/models/ticket_model.dart';
 import 'package:parking_app/modules/ticket/bloc/ticket_bloc.dart';
 
@@ -74,23 +78,77 @@ class _TicketPageState extends State<TicketPage> {
             children: [
               Row(
                 children: [
-                  Text('Data Entrada: $initialDate'),
-                  const Icon(
-                    Icons.call_received_outlined,
-                    color: Colors.green,
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.call_received_outlined,
+                            color: Colors.green,
+                            size: 20,
+                          ),
+                          Text(
+                            initialDate,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Visibility(
+                        visible: ticket.departureDateTime != null,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.call_made_outlined,
+                              color: Colors.red,
+                              size: 20,
+                            ),
+                            Text(
+                              finalDate,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Gap.horizontal(8),
+                  Text(
+                    '${Calculate.differenceInTime(
+                      initialDate: ticket.entryDataTime,
+                    )} hs',
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: Colors.grey,
+                    ),
                   ),
                 ],
               ),
-              Visibility(
-                visible: ticket.departureDateTime != null,
-                child: Row(
-                  children: [
-                    Text('Data Saída: $finalDate'),
-                    const Icon(
-                      Icons.call_made_outlined,
-                      color: Colors.red,
-                    ),
-                  ],
+            ],
+          ),
+          trailing: Column(
+            children: [
+              Text(
+                'R\$${NumberFormat.currency(
+                  locale: 'pt-BR',
+                  name: '',
+                  decimalDigits: 2,
+                ).format(ticket.amountPaid ?? 0)} ',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
+              Text(
+                ticket.paymentType?.toStringTypeTranslate() ?? '',
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: Colors.grey,
                 ),
               ),
             ],

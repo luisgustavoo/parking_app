@@ -344,6 +344,7 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
                     final data = <String, dynamic>{
                       'departure_date_time': DateTime.now().toString(),
                       'amount_paid': amountPaid,
+                      'payment_type': _type.toStringType(),
                     };
                     context.read<TicketUpdateBloc>().add(
                           TicketUpdateUpdateTicketEvent(
