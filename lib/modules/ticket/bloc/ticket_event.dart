@@ -14,3 +14,5 @@ class TicketFindByParkingSpaceIdEvent extends TicketEvent {
 
   final int id;
 }
+
+class TicketFindAllEvent extends TicketEvent {}

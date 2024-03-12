@@ -31,12 +31,34 @@ class TicketRepository {
     }
   }
 
+  Future<List<TicketModel>?> findAll() async {
+    try {
+      final response = await _restClient.auth().get<List<dynamic>>(
+            '/ticket',
+          );
+      if (response.data != null) {
+        final ticketList = List<Map<String, dynamic>>.from(response.data!)
+          ..sort(
+            (a, b) => DateTime.parse(a['entry_data_time'].toString())
+                .compareTo(DateTime.parse(b['entry_data_time'].toString())),
+          );
+        return ticketList.map(TicketModel.fromMap).toList();
+      }
+
+      return null;
+    } on RestClientException catch (e, s) {
+      _log.error('Erro ao buscar ticket', e, s);
+      throw Failure(message: 'Erro ao buscar ticket');
+    }
+  }
+
   Future<TicketModel?> findByParkingSpaceId(int id) async {
     try {
       final response = await _restClient.auth().get<List<dynamic>>(
         '/ticket',
         queryParameters: {
           'parking_space_id': id,
+          'departure_date_time': null,
         },
       );
       if (response.data != null) {

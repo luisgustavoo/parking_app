@@ -189,7 +189,7 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
     if (filteredList.isEmpty) {
       _disableButton = true;
 
-      return _emptyPage(widget.parkingSpaceModel);
+      return _emptyRegisterTicketPage(widget.parkingSpaceModel);
     }
 
     return Container(
@@ -222,7 +222,9 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
     List<TicketModel>? ticketList,
     TicketModel? ticket,
   }) {
-    if (ticket == null) {}
+    if (ticket == null) {
+      return _emptyFinalizeTicketPage();
+    }
 
     final valuePerHour =
         context.read<ParkingBloc>().parkingModel?.hourlyRate ?? 0;
@@ -385,7 +387,7 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
     }
   }
 
-  Widget _emptyPage(ParkingSpaceModel parkingSpaceModel) {
+  Widget _emptyRegisterTicketPage(ParkingSpaceModel parkingSpaceModel) {
     return Container(
       constraints: const BoxConstraints(
         minHeight: 200,
@@ -394,6 +396,17 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
         child: parkingSpaceModel.type == VehiclesType.car
             ? const Text('Nenhum carro cadastrado')
             : const Text('Nenhuma moto cadastrada'),
+      ),
+    );
+  }
+
+  Widget _emptyFinalizeTicketPage() {
+    return Container(
+      constraints: const BoxConstraints(
+        minHeight: 200,
+      ),
+      child: const Center(
+        child: Text('Nenhum ticket encontrado'),
       ),
     );
   }
