@@ -50,6 +50,7 @@ class ParkingSpacePage extends StatefulWidget {
 
 class _ParkingSpacePageState extends State<ParkingSpacePage> {
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  int? _parkingSpaceNumber;
   @override
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
@@ -101,7 +102,11 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
           parkingSpaceModel: parkingSpace,
           isLast: index == parkingSpaceList.length - 1,
           isSecondLast: index == parkingSpaceList.length - 2,
-          onClick: (parkingSpaceModel) async {
+          isSelected: _parkingSpaceNumber == parkingSpace.number,
+          onClick: (parkingSpaceModel, number) async {
+            setState(() {
+              _parkingSpaceNumber = number;
+            });
             switch (parkingSpaceModel.occupied) {
               case true:
                 await _registerVehicleDeparture(parkingSpaceModel);
@@ -117,7 +122,8 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
   Widget _buildFailureState() => const SizedBox.shrink();
 
   Future<void> _registerVehicleEntry(
-      ParkingSpaceModel parkingSpaceModel) async {
+    ParkingSpaceModel parkingSpaceModel,
+  ) async {
     final parkingSpaceBloc = BlocProvider.of<ParkingSpaceBloc>(context);
     final result =
         await showDialog<({TicketRegisterState state, VehiclesModel vehicle})>(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:parking_app/core/ui/extensions/screen_extension.dart';
+import 'package:parking_app/core/ui/extensions/theme_extension.dart';
 import 'package:parking_app/core/ui/widgets/gap.dart';
 import 'package:parking_app/models/parking_space_model.dart';
 import 'package:parking_app/models/vehicles_model.dart';
@@ -13,13 +14,15 @@ class ParkingSpaceCard extends StatefulWidget {
     required this.isLast,
     required this.isSecondLast,
     this.onClick,
+    this.isSelected = false,
     super.key,
   });
 
   final ParkingSpaceModel parkingSpaceModel;
   final bool isLast;
   final bool isSecondLast;
-  final void Function(ParkingSpaceModel parkingSpaceModel)? onClick;
+  final void Function(ParkingSpaceModel parkingSpaceModel, int number)? onClick;
+  final bool isSelected;
 
   @override
   State<ParkingSpaceCard> createState() => _ParkingSpaceCardState();
@@ -31,7 +34,8 @@ class _ParkingSpaceCardState extends State<ParkingSpaceCard> {
     return GestureDetector(
       onTap: () {
         if (widget.onClick != null) {
-          widget.onClick?.call(widget.parkingSpaceModel);
+          widget.onClick
+              ?.call(widget.parkingSpaceModel, widget.parkingSpaceModel.number);
         }
       },
       child: Container(
@@ -53,6 +57,7 @@ class _ParkingSpaceCardState extends State<ParkingSpaceCard> {
         child: Center(
           child: _BuildParkingSpace(
             parkingSpaceModel: widget.parkingSpaceModel,
+            isSelected: widget.isSelected,
           ),
         ),
       ),
@@ -63,51 +68,73 @@ class _ParkingSpaceCardState extends State<ParkingSpaceCard> {
 class _BuildParkingSpace extends StatelessWidget {
   const _BuildParkingSpace({
     required this.parkingSpaceModel,
+    required this.isSelected,
   });
 
   final ParkingSpaceModel parkingSpaceModel;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
     return switch (parkingSpaceModel.occupied) {
-      true => _buildParkingSpaceOccupied(),
-      _ => _buildParkingSpaceEmpty()
+      true => _buildParkingSpaceOccupied(context),
+      _ => _buildParkingSpaceEmpty(context)
     };
   }
 
-  Widget _buildParkingSpaceEmpty() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'Vaga ${parkingSpaceModel.number}',
-          style: const TextStyle(
-            color: Colors.grey,
-            fontSize: 20,
+  Widget _buildParkingSpaceEmpty(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
+      width: MediaQuery.sizeOf(context).width,
+      decoration: BoxDecoration(
+        border: isSelected
+            ? Border.all(
+                color: context.primaryColorDark,
+              )
+            : null,
+        color: isSelected ? context.primaryColorLight : null,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Vaga ${parkingSpaceModel.number}',
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 20,
+            ),
           ),
-        ),
-        Text(
-          '(${parkingSpaceModel.type.toStringTypeTranslate()})',
-          style: const TextStyle(
-            color: Colors.grey,
-            fontSize: 12,
+          Text(
+            '(${parkingSpaceModel.type.toStringTypeTranslate()})',
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 12,
+            ),
           ),
-        ),
-        const Text(
-          'Livre',
-          style: TextStyle(
-            color: Colors.green,
-            fontSize: 20,
+          const Text(
+            'Livre',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 20,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _buildParkingSpaceOccupied() {
+  Widget _buildParkingSpaceOccupied(BuildContext context) {
     return parkingSpaceModel.number.isOdd
-        ? Padding(
+        ? Container(
             padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
+            decoration: BoxDecoration(
+              border: isSelected
+                  ? Border.all(
+                      color: context.primaryColor,
+                    )
+                  : null,
+              color: isSelected ? context.primaryColorLight : null,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -165,8 +192,16 @@ class _BuildParkingSpace extends StatelessWidget {
               ],
             ),
           )
-        : Padding(
+        : Container(
             padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
+            decoration: BoxDecoration(
+              border: isSelected
+                  ? Border.all(
+                      color: context.primaryColor,
+                    )
+                  : null,
+              color: isSelected ? context.primaryColorLight : null,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

@@ -1,5 +1,7 @@
 {
-    "users": [],
+    "users": [
+   
+    ],
     "adm_users": [],
     "parking": [
         {
@@ -11,7 +13,8 @@
         }
     ],
     "vehicles": [
-  
+        
+   
     ],
     "parking-space": [
         {
@@ -133,7 +136,5 @@
     "payment": [
 
     ],
-    "daily-closing": [
-
-    ]
+    "daily-closing": []
 }
