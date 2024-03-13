@@ -102,7 +102,7 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
           parkingSpaceModel: parkingSpace,
           isLast: index == parkingSpaceList.length - 1,
           isSecondLast: index == parkingSpaceList.length - 2,
-          isSelected: _parkingSpaceNumber == parkingSpace.number,
+          selected: _parkingSpaceNumber == parkingSpace.number,
           onClick: (parkingSpaceModel, number) async {
             setState(() {
               _parkingSpaceNumber = number;

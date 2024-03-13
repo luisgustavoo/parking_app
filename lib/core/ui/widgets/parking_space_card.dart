@@ -14,7 +14,7 @@ class ParkingSpaceCard extends StatefulWidget {
     required this.isLast,
     required this.isSecondLast,
     this.onClick,
-    this.isSelected = false,
+    this.selected = false,
     super.key,
   });
 
@@ -22,7 +22,7 @@ class ParkingSpaceCard extends StatefulWidget {
   final bool isLast;
   final bool isSecondLast;
   final void Function(ParkingSpaceModel parkingSpaceModel, int number)? onClick;
-  final bool isSelected;
+  final bool selected;
 
   @override
   State<ParkingSpaceCard> createState() => _ParkingSpaceCardState();
@@ -57,7 +57,7 @@ class _ParkingSpaceCardState extends State<ParkingSpaceCard> {
         child: Center(
           child: _BuildParkingSpace(
             parkingSpaceModel: widget.parkingSpaceModel,
-            isSelected: widget.isSelected,
+            selected: widget.selected,
           ),
         ),
       ),
@@ -68,11 +68,11 @@ class _ParkingSpaceCardState extends State<ParkingSpaceCard> {
 class _BuildParkingSpace extends StatelessWidget {
   const _BuildParkingSpace({
     required this.parkingSpaceModel,
-    required this.isSelected,
+    required this.selected,
   });
 
   final ParkingSpaceModel parkingSpaceModel;
-  final bool isSelected;
+  final bool selected;
 
   @override
   Widget build(BuildContext context) {
@@ -87,12 +87,12 @@ class _BuildParkingSpace extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
       width: MediaQuery.sizeOf(context).width,
       decoration: BoxDecoration(
-        border: isSelected
+        border: selected
             ? Border.all(
                 color: context.primaryColorDark,
               )
             : null,
-        color: isSelected ? context.primaryColorLight : null,
+        color: selected ? context.primaryColorLight : null,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -128,12 +128,12 @@ class _BuildParkingSpace extends StatelessWidget {
         ? Container(
             padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
             decoration: BoxDecoration(
-              border: isSelected
+              border: selected
                   ? Border.all(
                       color: context.primaryColor,
                     )
                   : null,
-              color: isSelected ? context.primaryColorLight : null,
+              color: selected ? context.primaryColorLight : null,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -195,12 +195,12 @@ class _BuildParkingSpace extends StatelessWidget {
         : Container(
             padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
             decoration: BoxDecoration(
-              border: isSelected
+              border: selected
                   ? Border.all(
                       color: context.primaryColor,
                     )
                   : null,
-              color: isSelected ? context.primaryColorLight : null,
+              color: selected ? context.primaryColorLight : null,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
