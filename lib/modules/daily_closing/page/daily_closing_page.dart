@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+import 'package:parking_app/core/helpers/utils.dart';
 import 'package:parking_app/core/ui/widgets/parking_loading_widget.dart';
 import 'package:parking_app/core/ui/widgets/parking_snack_bar.dart';
 import 'package:parking_app/models/daily_closing_model.dart';
@@ -17,11 +17,10 @@ class _DailyClosingPageState extends State<DailyClosingPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      context.read<DailyClosingBloc>().add(
-            DailyClosingFindAllEvent(),
-          );
-    });
+
+    context.read<DailyClosingBloc>().add(
+          DailyClosingFindAllEvent(),
+        );
   }
 
   @override
@@ -32,7 +31,7 @@ class _DailyClosingPageState extends State<DailyClosingPage> {
       child: Scaffold(
         body: BlocConsumer<DailyClosingBloc, DailyClosingState>(
           listener: (context, state) {
-            if (state is DailyClosingFailure) {
+            if (state.status == DailyClosingStatus.failure) {
               scaffoldMessengerKey.currentState?.showSnackBar(
                 ParkingSnackBar.buildSnackBar(
                   content: const Text('Erro ao listar dados do fechamento'),
@@ -45,7 +44,9 @@ class _DailyClosingPageState extends State<DailyClosingPage> {
             return state.match(
               onInitial: _buildInitialState,
               onLoading: _buildLoadingState,
-              onSuccess: _buildSuccessState,
+              onSuccess: () {
+                return _buildSuccessState(state.dailyClosingList);
+              },
               onFailure: _buildFailureState,
             );
           },
@@ -70,20 +71,17 @@ class _DailyClosingPageState extends State<DailyClosingPage> {
       itemBuilder: (context, index) {
         final dailyClosing = dailyClosingList[index];
 
-        final formatDate = DateFormat(
-          'dd/MM/yyyy',
+        final dailyClosingDate = Utils.dateFormat(
+          date: dailyClosing.date,
+          showTime: false,
         );
-
-        final dailyClosingDate = formatDate.format(dailyClosing.date);
 
         return ListTile(
           title: Text('Dia $dailyClosingDate'),
           trailing: Text(
-            'R\$${NumberFormat.currency(
-              locale: 'pt-BR',
-              name: '',
-              decimalDigits: 2,
-            ).format(dailyClosing.amount)}',
+            Utils.currencyFormat(
+              value: dailyClosing.amount,
+            ),
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

@@ -57,7 +57,7 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
       child: Scaffold(
         body: BlocConsumer<ParkingSpaceBloc, ParkingSpaceState>(
           listener: (context, state) {
-            if (state is ParkingSpaceFailure) {
+            if (state.status == ParkingSpaceStatus.failure) {
               _scaffoldMessengerKey.currentState?.showSnackBar(
                 ParkingSnackBar.buildSnackBar(
                   content: const Text('Erro ao listar vagas de estacionamento'),
@@ -70,7 +70,9 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
             return state.match(
               onInitial: _buildInitialState,
               onLoading: _buildLoadingState,
-              onSuccess: _buildSuccessState,
+              onSuccess: () {
+                return _buildSuccessState(state.parkingSpaceList);
+              },
               onFailure: _buildFailureState,
             );
           },
@@ -85,10 +87,10 @@ class _ParkingSpacePageState extends State<ParkingSpacePage> {
         child: ParkingLoadingWidget(),
       );
 
-  Widget _buildSuccessState(List<ParkingSpaceModel> parkingSpaceList) {
+  Widget _buildSuccessState(List<ParkingSpaceModel>? parkingSpaceList) {
     return GridView.builder(
       padding: const EdgeInsets.only(top: 16, bottom: 16),
-      itemCount: parkingSpaceList.length,
+      itemCount: parkingSpaceList!.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         mainAxisExtent: 100.h,

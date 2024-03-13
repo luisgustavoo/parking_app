@@ -113,9 +113,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 Gap.vertical(16),
                 BlocConsumer<RegisterBloc, RegisterState>(
-                  // bloc: Injector.get(),
                   listener: (context, state) async {
-                    if (state is RegisterFailure) {
+                    if (state.status == RegisterStatus.failure) {
                       _scaffoldMessengerKey.currentState!.showSnackBar(
                         ParkingSnackBar.buildSnackBar(
                           content: const Text('Erro ao registrar usuário'),
@@ -124,7 +123,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       );
                     }
 
-                    if (state is RegisterSuccess) {
+                    if (state.status == RegisterStatus.success) {
                       _scaffoldMessengerKey.currentState!.showSnackBar(
                         ParkingSnackBar.buildSnackBar(
                           content:
@@ -144,7 +143,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       key: const Key('register-button'),
                       'Cadastrar',
                       width: MediaQuery.sizeOf(context).width,
-                      isLoading: state is RegisterLoading,
+                      isLoading: state.status == RegisterStatus.loading,
                       onPressed: () {
                         final valid =
                             _formKey.currentState?.validate() ?? false;

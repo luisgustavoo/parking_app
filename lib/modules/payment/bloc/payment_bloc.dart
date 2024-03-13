@@ -13,7 +13,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     required Log log,
   })  : _paymentRepository = paymentRepository,
         _log = log,
-        super(PaymentInitial()) {
+        super(const PaymentState.initial()) {
     on<PaymentRegisterEvent>(_register);
   }
 
@@ -25,11 +25,14 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     Emitter<PaymentState> emit,
   ) async {
     try {
-      emit(PaymentLoading());
+      emit(state.copyWith(status: PaymentStatus.loading));
       await _paymentRepository.register(event.paymentModel);
-      emit(PaymentSuccess());
+      emit(state.copyWith(status: PaymentStatus.success));
     } on Exception catch (e, s) {
-      emit(PaymentFailure());
+      emit(state.copyWith(
+        status: PaymentStatus.failure,
+        error: e,
+      ));
       _log.error('Erro ao realizar pagamento', e, s);
     }
   }

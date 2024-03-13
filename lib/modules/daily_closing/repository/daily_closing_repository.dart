@@ -35,8 +35,8 @@ class DailyClosingRepository {
       if (response.data != null) {
         final dailyClosingList = List<Map<String, dynamic>>.from(response.data!)
           ..sort(
-            (a, b) => DateTime.parse(a['date'].toString())
-                .compareTo(DateTime.parse(b['date'].toString())),
+            (a, b) => DateTime.parse(b['date'].toString())
+                .compareTo(DateTime.parse(a['date'].toString())),
           );
 
         return dailyClosingList.map(DailyClosingModel.fromMap).toList();

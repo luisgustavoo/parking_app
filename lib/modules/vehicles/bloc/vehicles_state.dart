@@ -1,22 +1,21 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'vehicles_bloc.dart';
 
 extension PatternMatch on VehiclesState {
   Widget match({
     required Widget Function() onInitial,
     required Widget Function() onLoading,
-    required Widget Function(List<VehiclesModel> vehicleList) onSuccess,
+    required Widget Function() onSuccess,
     required Widget Function() onFailure,
   }) {
-    final state = this;
-
-    switch (state) {
-      case VehiclesInitial():
+    switch (status) {
+      case VehiclesStatus.initial:
         return onInitial();
-      case VehiclesLoading():
+      case VehiclesStatus.loading:
         return onLoading();
-      case VehiclesSuccess():
-        return onSuccess(state.vehicleList);
-      case VehiclesFailure():
+      case VehiclesStatus.success:
+        return onSuccess();
+      case VehiclesStatus.failure:
         return onFailure();
       default:
         return const SizedBox.shrink();
@@ -24,28 +23,37 @@ extension PatternMatch on VehiclesState {
   }
 }
 
-sealed class VehiclesState extends Equatable {
-  const VehiclesState();
+enum VehiclesStatus { initial, loading, success, failure }
+
+class VehiclesState extends Equatable {
+  const VehiclesState._({
+    required this.status,
+    this.vehicleList,
+    this.error,
+  });
+
+  VehiclesState.initial()
+      : this._(
+          status: VehiclesStatus.initial,
+          vehicleList: [],
+        );
+
+  final VehiclesStatus status;
+  final List<VehiclesModel>? vehicleList;
+  final Exception? error;
 
   @override
-  List<Object> get props => [];
-}
+  List<Object?> get props => [status, vehicleList, error];
 
-final class VehiclesInitial extends VehiclesState {}
-
-final class VehiclesLoading extends VehiclesState {}
-
-final class VehiclesSuccess extends VehiclesState {
-  const VehiclesSuccess({
-    required this.vehicleList,
-  });
-  final List<VehiclesModel> vehicleList;
-}
-
-final class VehiclesFailure extends VehiclesState {
-  const VehiclesFailure({
-    required this.error,
-  });
-
-  final Exception error;
+  VehiclesState copyWith({
+    VehiclesStatus? status,
+    List<VehiclesModel>? vehicleList,
+    Exception? error,
+  }) {
+    return VehiclesState._(
+      status: status ?? this.status,
+      vehicleList: vehicleList ?? this.vehicleList,
+      error: error,
+    );
+  }
 }

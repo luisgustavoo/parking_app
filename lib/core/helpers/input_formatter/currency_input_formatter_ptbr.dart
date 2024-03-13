@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+import 'package:parking_app/core/helpers/utils.dart';
 
 class CurrencyInputFormatterPtBr extends TextInputFormatter {
   @override
@@ -32,11 +32,7 @@ class CurrencyInputFormatterPtBr extends TextInputFormatter {
 
     // Pega o valor e divide por 100
     // Ex: Se eu digitar 12, eu de mostrar 0,12
-    final result = NumberFormat.currency(
-      locale: 'pt-BR',
-      symbol: r'R$',
-      decimalDigits: 2,
-    ).format(value / 100);
+    final result = Utils.currencyFormat(value: value / 100);
 
     return newValue.copyWith(
       text: result,

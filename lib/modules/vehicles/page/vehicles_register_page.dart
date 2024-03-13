@@ -97,7 +97,7 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
               visible: isUpdate,
               child: BlocConsumer<VehiclesRegisterBloc, VehiclesRegisterState>(
                 listener: (context, state) {
-                  if (state is VehiclesRegisterDeletingFailure) {
+                  if (state.status == VehiclesRegisterStatus.loading) {
                     _scaffoldMessengerKey.currentState!.showSnackBar(
                       ParkingSnackBar.buildSnackBar(
                         content: const Text('Erro ao excluir veículo'),
@@ -110,14 +110,16 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                     );
                   }
 
-                  if (state is VehiclesRegisterDeletingSuccess) {
+                  if (state.status == VehiclesRegisterStatus.success) {
                     Navigator.pop(context, true);
                   }
                 },
                 listenWhen: (previous, current) {
-                  return (previous is VehiclesRegisterDeleting) &&
-                      ((current is VehiclesRegisterDeletingSuccess) ||
-                          (current is VehiclesRegisterDeletingFailure));
+                  return (previous.status == VehiclesRegisterStatus.deleting) &&
+                      ((current.status ==
+                              VehiclesRegisterStatus.deletingSuccess) ||
+                          (current.status ==
+                              VehiclesRegisterStatus.deletingFailure));
                 },
                 builder: (context, state) {
                   return IconButton(
@@ -130,7 +132,7 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                             );
                       }
                     },
-                    icon: state is VehiclesRegisterDeleting
+                    icon: state.status == VehiclesRegisterStatus.deleting
                         ? const SizedBox(
                             width: 10,
                             height: 10,
@@ -224,7 +226,7 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                 Gap.vertical(16),
                 BlocConsumer<VehiclesRegisterBloc, VehiclesRegisterState>(
                   listener: (context, state) async {
-                    if (state is VehiclesRegisterFailure) {
+                    if (state.status == VehiclesRegisterStatus.failure) {
                       _scaffoldMessengerKey.currentState!.showSnackBar(
                         ParkingSnackBar.buildSnackBar(
                           content: const Text('Erro ao registrar veículo'),
@@ -237,7 +239,7 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                       );
                     }
 
-                    if (state is VehiclesRegisterSuccess) {
+                    if (state.status == VehiclesRegisterStatus.success) {
                       _scaffoldMessengerKey.currentState!.showSnackBar(
                         ParkingSnackBar.buildSnackBar(
                           content: Text(
@@ -259,7 +261,7 @@ class _VehiclesRegisterPageState extends State<VehiclesRegisterPage> {
                     return ParkingButton(
                       isUpdate ? 'Atualizar' : 'Cadastrar',
                       width: MediaQuery.sizeOf(context).width,
-                      isLoading: state is VehiclesRegisterLoading,
+                      isLoading: state.status == VehiclesRegisterStatus.loading,
                       onPressed: () {
                         final valid =
                             _formKey.currentState?.validate() ?? false;

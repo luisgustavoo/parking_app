@@ -4,20 +4,17 @@ extension PatternMatch on DailyClosingState {
   Widget match({
     required Widget Function() onInitial,
     required Widget Function() onLoading,
-    required Widget Function(List<DailyClosingModel>? dailyClosingList)
-        onSuccess,
+    required Widget Function() onSuccess,
     required Widget Function() onFailure,
   }) {
-    final state = this;
-
-    switch (state) {
-      case DailyClosingInitial():
+    switch (status) {
+      case DailyClosingStatus.initial:
         return onInitial();
-      case DailyClosingLoading():
+      case DailyClosingStatus.loading:
         return onLoading();
-      case DailyClosingSuccess():
-        return onSuccess(state.dailyClosingList);
-      case DailyClosingFailure():
+      case DailyClosingStatus.success:
+        return onSuccess();
+      case DailyClosingStatus.failure:
         return onFailure();
       default:
         return const SizedBox.shrink();
@@ -25,22 +22,37 @@ extension PatternMatch on DailyClosingState {
   }
 }
 
-sealed class DailyClosingState extends Equatable {
-  const DailyClosingState();
+enum DailyClosingStatus { initial, loading, success, failure }
+
+class DailyClosingState extends Equatable {
+  const DailyClosingState._({
+    required this.status,
+    this.dailyClosingList,
+    this.error,
+  });
+
+  DailyClosingState.initial()
+      : this._(
+          status: DailyClosingStatus.initial,
+          dailyClosingList: [],
+        );
+
+  final DailyClosingStatus status;
+  final List<DailyClosingModel>? dailyClosingList;
+  final Exception? error;
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [status, dailyClosingList, error];
+
+  DailyClosingState copyWith({
+    DailyClosingStatus? status,
+    List<DailyClosingModel>? dailyClosingList,
+    Exception? error,
+  }) {
+    return DailyClosingState._(
+      status: status ?? this.status,
+      dailyClosingList: dailyClosingList ?? this.dailyClosingList,
+      error: error,
+    );
+  }
 }
-
-final class DailyClosingInitial extends DailyClosingState {}
-
-final class DailyClosingLoading extends DailyClosingState {}
-
-final class DailyClosingSuccess extends DailyClosingState {
-  const DailyClosingSuccess({
-    this.dailyClosingList,
-  });
-  final List<DailyClosingModel>? dailyClosingList;
-}
-
-final class DailyClosingFailure extends DailyClosingState {}

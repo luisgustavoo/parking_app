@@ -12,7 +12,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     required Log log,
   })  : _loginService = loginService,
         _log = log,
-        super(LoginInitial()) {
+        super(const LoginState.initial()) {
     on<LoginUserEvent>(_login);
   }
 
@@ -24,11 +24,24 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) async {
     try {
-      emit(LoginLoading());
+      emit(
+        state.copyWith(
+          status: LoginStatus.loading,
+        ),
+      );
       await _loginService.login(event.cpf, event.password);
-      emit(LoginSuccess());
+      emit(
+        state.copyWith(
+          status: LoginStatus.success,
+        ),
+      );
     } on Exception catch (e, s) {
-      emit(LoginFailure());
+      emit(
+        state.copyWith(
+          status: LoginStatus.failure,
+          error: e,
+        ),
+      );
       _log.error('Erro realizer login', e, s);
     }
   }

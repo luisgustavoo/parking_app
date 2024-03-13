@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:parking_app/core/helpers/calculate.dart';
+import 'package:parking_app/core/helpers/utils.dart';
 import 'package:parking_app/core/ui/widgets/gap.dart';
 import 'package:parking_app/core/ui/widgets/parking_button.dart';
 import 'package:parking_app/core/ui/widgets/parking_loading_widget.dart';
@@ -25,13 +23,12 @@ class _TicketPageState extends State<TicketPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      context.read<TicketBloc>().add(
-            TicketFindByDateEvent(
-              date: DateTime.now(),
-            ),
-          );
-    });
+
+    context.read<TicketBloc>().add(
+          TicketFindByDateEvent(
+            date: DateTime.now(),
+          ),
+        );
   }
 
   @override
@@ -45,20 +42,24 @@ class _TicketPageState extends State<TicketPage> {
             return state.match(
               onInitial: _buildInitialState,
               onLoading: _buildLoadingState,
-              onSuccess: _buildSuccessState,
+              onSuccess: () {
+                return _buildSuccessState(
+                  ticketList: state.ticketList,
+                );
+              },
               onFailure: _buildFailureState,
             );
           },
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            final result = await showDialog<DailyClosingState>(
+            final result = await showDialog<DailyClosingStatus>(
               context: context,
               builder: _buildDialog,
             );
 
             if (result != null) {
-              if (result is DailyClosingFailure) {
+              if (result == DailyClosingStatus.failure) {
                 _scaffoldMessengerKey.currentState?.showSnackBar(
                   ParkingSnackBar.buildSnackBar(
                     content: const Text('Erro registrar fechamento diário'),
@@ -67,7 +68,7 @@ class _TicketPageState extends State<TicketPage> {
                 );
               }
 
-              if (result is DailyClosingSuccess) {
+              if (result == DailyClosingStatus.success) {
                 _scaffoldMessengerKey.currentState?.showSnackBar(
                   ParkingSnackBar.buildSnackBar(
                     content: const Text('Fechamento realizado com sucesso!'),
@@ -89,15 +90,15 @@ class _TicketPageState extends State<TicketPage> {
       actions: [
         BlocConsumer<DailyClosingBloc, DailyClosingState>(
           listener: (context, state) {
-            if (state is DailyClosingSuccess) {
+            if (state.status == DailyClosingStatus.success) {
               if (Navigator.canPop(context)) {
-                Navigator.pop(context, state);
+                Navigator.pop(context, state.status);
               }
             }
 
-            if (state is DailyClosingFailure) {
+            if (state.status == DailyClosingStatus.failure) {
               if (Navigator.canPop(context)) {
-                Navigator.pop(context, state);
+                Navigator.pop(context, state.status);
               }
             }
           },
@@ -107,7 +108,7 @@ class _TicketPageState extends State<TicketPage> {
               height: 30,
               width: 50,
               style: ParkingButtonStyle.secondary,
-              isLoading: state is DailyClosingLoading,
+              isLoading: state.status == DailyClosingStatus.loading,
               onPressed: () {
                 final ticketList = context.read<TicketBloc>().ticketList;
                 final filteredDate = context.read<TicketBloc>().filteredDate;
@@ -148,7 +149,6 @@ class _TicketPageState extends State<TicketPage> {
 
   Widget _buildSuccessState({
     List<TicketModel>? ticketList,
-    TicketModel? ticket,
   }) {
     if (ticketList?.isEmpty ?? true) {
       return _emptyPage();
@@ -161,13 +161,8 @@ class _TicketPageState extends State<TicketPage> {
 
         final ticket = ticketList![index];
 
-        final formatDate = DateFormat(
-          'dd/MM/yyyy hh:mm:ss',
-        );
-
-        final initialDate = formatDate.format(ticket.entryDataTime);
         if (ticket.departureDateTime != null) {
-          finalDate = formatDate.format(ticket.departureDateTime!);
+          finalDate = Utils.dateFormat(date: ticket.departureDateTime!);
         }
 
         return ListTile(
@@ -186,7 +181,7 @@ class _TicketPageState extends State<TicketPage> {
                             size: 20,
                           ),
                           Text(
-                            initialDate,
+                            Utils.dateFormat(date: ticket.entryDataTime),
                             style: const TextStyle(
                               fontSize: 10,
                               color: Colors.grey,
@@ -217,7 +212,7 @@ class _TicketPageState extends State<TicketPage> {
                   ),
                   Gap.horizontal(8),
                   Text(
-                    '${Calculate.differenceInTime(
+                    '${Utils.differenceInTime(
                       initialDate: ticket.entryDataTime,
                     )} hs',
                     style: const TextStyle(
@@ -232,11 +227,9 @@ class _TicketPageState extends State<TicketPage> {
           trailing: Column(
             children: [
               Text(
-                'R\$${NumberFormat.currency(
-                  locale: 'pt-BR',
-                  name: '',
-                  decimalDigits: 2,
-                ).format(ticket.amountPaid ?? 0)} ',
+                Utils.currencyFormat(
+                  value: ticket.amountPaid ?? 0,
+                ),
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,

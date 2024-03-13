@@ -4,25 +4,17 @@ extension PatternMatch on TicketState {
   Widget match({
     required Widget Function() onInitial,
     required Widget Function() onLoading,
-    required Widget Function({
-      List<TicketModel>? ticketList,
-      TicketModel? ticket,
-    }) onSuccess,
+    required Widget Function() onSuccess,
     required Widget Function() onFailure,
   }) {
-    final state = this;
-
-    switch (state) {
-      case TicketInitial():
+    switch (status) {
+      case TicketStatus.initial:
         return onInitial();
-      case TicketLoading():
+      case TicketStatus.loading:
         return onLoading();
-      case TicketSuccess():
-        return onSuccess(
-          ticket: state.ticket,
-          ticketList: state.ticketList,
-        );
-      case TicketFailure():
+      case TicketStatus.success:
+        return onSuccess();
+      case TicketStatus.failure:
         return onFailure();
       default:
         return const SizedBox.shrink();
@@ -30,25 +22,44 @@ extension PatternMatch on TicketState {
   }
 }
 
-sealed class TicketState extends Equatable {
-  const TicketState();
+enum TicketStatus { initial, loading, success, failure }
 
-  @override
-  List<Object> get props => [];
-}
-
-final class TicketInitial extends TicketState {}
-
-final class TicketLoading extends TicketState {}
-
-final class TicketSuccess extends TicketState {
-  const TicketSuccess({
+class TicketState extends Equatable {
+  const TicketState._({
+    required this.status,
     this.ticketList,
     this.ticket,
+    this.error,
   });
 
-  final List<TicketModel>? ticketList;
-  final TicketModel? ticket;
-}
+  TicketState.initial()
+      : this._(
+          status: TicketStatus.initial,
+          ticketList: [],
+        );
 
-final class TicketFailure extends TicketState {}
+  final TicketStatus status;
+
+  final List<TicketModel>? ticketList;
+
+  final TicketModel? ticket;
+
+  final Exception? error;
+
+  @override
+  List<Object?> get props => [status, ticketList, ticket];
+
+  TicketState copyWith({
+    TicketStatus? status,
+    List<TicketModel>? ticketList,
+    TicketModel? ticket,
+    Exception? error,
+  }) {
+    return TicketState._(
+      status: status ?? this.status,
+      ticketList: ticketList ?? this.ticketList,
+      ticket: ticket ?? this.ticket,
+      error: error,
+    );
+  }
+}

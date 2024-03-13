@@ -14,7 +14,7 @@ class VehiclesBloc extends Bloc<VehiclesEvent, VehiclesState> {
     required Log log,
   })  : _vehiclesRepository = vehiclesRepository,
         _log = log,
-        super(VehiclesInitial()) {
+        super(VehiclesState.initial()) {
     on<VehiclesFindAllEvent>(_findAll);
   }
 
@@ -26,11 +26,21 @@ class VehiclesBloc extends Bloc<VehiclesEvent, VehiclesState> {
     Emitter<VehiclesState> emit,
   ) async {
     try {
-      emit(VehiclesLoading());
+      emit(state.copyWith(status: VehiclesStatus.loading));
       final vehiclesList = await _vehiclesRepository.findAll();
-      emit(VehiclesSuccess(vehicleList: vehiclesList));
+      emit(
+        state.copyWith(
+          status: VehiclesStatus.success,
+          vehicleList: vehiclesList,
+        ),
+      );
     } on Exception catch (e, s) {
-      emit(VehiclesFailure(error: e));
+      emit(
+        state.copyWith(
+          status: VehiclesStatus.failure,
+          error: e,
+        ),
+      );
       _log.error('Erro buscar lista veículos', e, s);
       // throw Failure(message: 'Erro buscar lista veículos');
     }

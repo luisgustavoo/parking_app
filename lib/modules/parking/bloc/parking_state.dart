@@ -1,22 +1,32 @@
 part of 'parking_bloc.dart';
 
-sealed class ParkingState extends Equatable {
-  const ParkingState();
+enum ParkingStatus { initial, loading, success, failure }
 
-  @override
-  List<Object> get props => [];
-}
-
-final class ParkingInitial extends ParkingState {}
-
-final class ParkingLoading extends ParkingState {}
-
-final class ParkingSuccess extends ParkingState {
-  const ParkingSuccess({
-    required this.parkingModel,
+class ParkingState extends Equatable {
+  const ParkingState._({
+    required this.status,
+    this.parkingModel,
+    this.error,
   });
 
-  final ParkingModel parkingModel;
-}
+  const ParkingState.initial() : this._(status: ParkingStatus.initial);
 
-final class ParkingFailure extends ParkingState {}
+  final ParkingStatus status;
+  final ParkingModel? parkingModel;
+  final Exception? error;
+
+  @override
+  List<Object?> get props => [status, parkingModel, error];
+
+  ParkingState copyWith({
+    ParkingStatus? status,
+    ParkingModel? parkingModel,
+    Exception? error,
+  }) {
+    return ParkingState._(
+      status: status ?? this.status,
+      parkingModel: parkingModel ?? this.parkingModel,
+      error: error,
+    );
+  }
+}

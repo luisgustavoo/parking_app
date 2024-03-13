@@ -14,7 +14,7 @@ class ParkingBloc extends Bloc<ParkingEvent, ParkingState> {
     required Log log,
   })  : _parkingRepository = parkingRepository,
         _log = log,
-        super(ParkingInitial()) {
+        super(const ParkingState.initial()) {
     on<ParkingFindAllEvent>(_findAll);
   }
 
@@ -27,14 +27,28 @@ class ParkingBloc extends Bloc<ParkingEvent, ParkingState> {
     Emitter<ParkingState> emit,
   ) async {
     try {
-      emit(ParkingLoading());
+      emit(
+        state.copyWith(
+          status: ParkingStatus.loading,
+        ),
+      );
       parkingModel = await _parkingRepository.findAll();
       if (parkingModel == null) {
         throw ParkingNotDataFoundException();
       }
-      emit(ParkingSuccess(parkingModel: parkingModel!));
+      emit(
+        state.copyWith(
+          status: ParkingStatus.loading,
+          parkingModel: parkingModel,
+        ),
+      );
     } on Exception catch (e, s) {
-      emit(ParkingFailure());
+      emit(
+        state.copyWith(
+          status: ParkingStatus.failure,
+          error: e,
+        ),
+      );
       _log.error('Erro buscar dados do estacionamento', e, s);
     }
   }

@@ -22,7 +22,7 @@ class _VehiclesPageState extends State<VehiclesPage> {
       child: Scaffold(
         body: BlocListener<VehiclesBloc, VehiclesState>(
           listener: (context, state) {
-            if (state is VehiclesFailure) {
+            if (state.status == VehiclesStatus.failure) {
               _scaffoldMessengerKey.currentState?.showSnackBar(
                 ParkingSnackBar.buildSnackBar(
                   content: const Text('Erro ao listar veículos'),
@@ -36,7 +36,9 @@ class _VehiclesPageState extends State<VehiclesPage> {
               return state.match(
                 onInitial: _buildInitialState,
                 onLoading: _buildLoadingState,
-                onSuccess: _buildSuccessState,
+                onSuccess: () {
+                  return _buildSuccessState(state.vehicleList);
+                },
                 onFailure: _buildFailureState,
               );
             },
@@ -58,13 +60,13 @@ class _VehiclesPageState extends State<VehiclesPage> {
         child: ParkingLoadingWidget(),
       );
 
-  Widget _buildSuccessState(List<VehiclesModel> vehiclesList) {
-    if (vehiclesList.isEmpty) {
+  Widget _buildSuccessState(List<VehiclesModel>? vehiclesList) {
+    if (vehiclesList?.isEmpty ?? true) {
       return _emptyPage();
     }
 
     return ListView.builder(
-      itemCount: vehiclesList.length,
+      itemCount: vehiclesList!.length,
       itemBuilder: (context, index) {
         final vehicle = vehiclesList[index];
         return ListTile(

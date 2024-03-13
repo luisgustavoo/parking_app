@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                   Gap.vertical(16),
                   BlocConsumer<LoginBloc, LoginState>(
                     listener: (context, state) {
-                      if (state is LoginFailure) {
+                      if (state.status == LoginStatus.failure) {
                         _scaffoldMessengerKey.currentState!.showSnackBar(
                           ParkingSnackBar.buildSnackBar(
                             content: const Text('Erro ao realizar login'),
@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       }
 
-                      if (state is LoginSuccess) {
+                      if (state.status == LoginStatus.success) {
                         Navigator.pushNamedAndRemoveUntil(
                           context,
                           '/parking',
@@ -116,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                       return ParkingButton(
                         'Entrar',
                         width: MediaQuery.sizeOf(context).width,
-                        isLoading: state is LoginLoading,
+                        isLoading: state.status == LoginStatus.loading,
                         onPressed: () {
                           final valid =
                               _formKey.currentState?.validate() ?? false;

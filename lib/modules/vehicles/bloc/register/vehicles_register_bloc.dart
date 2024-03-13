@@ -14,7 +14,7 @@ class VehiclesRegisterBloc
     required Log log,
   })  : _vehiclesRegisterRepository = vehiclesRegisterRepository,
         _log = log,
-        super(VehiclesRegisterInitial()) {
+        super(const VehiclesRegisterState.initial()) {
     on<VehiclesRegisterVehicleEvent>(_register);
     on<VehiclesUpdateEvent>(_update);
     on<VehiclesDeleteEvent>(_delete);
@@ -28,7 +28,7 @@ class VehiclesRegisterBloc
     Emitter<VehiclesRegisterState> emit,
   ) async {
     try {
-      emit(VehiclesRegisterLoading());
+      emit(state.copyWith(status: VehiclesRegisterStatus.loading));
       final vehicle = VehiclesModel(
         plate: event.plate,
         model: event.model,
@@ -37,9 +37,14 @@ class VehiclesRegisterBloc
         owner: event.owner,
       );
       await _vehiclesRegisterRepository.register(vehicle);
-      emit(VehiclesRegisterSuccess());
+      emit(state.copyWith(status: VehiclesRegisterStatus.success));
     } on Exception catch (e, s) {
-      emit(VehiclesRegisterFailure());
+      emit(
+        state.copyWith(
+          status: VehiclesRegisterStatus.failure,
+          error: e,
+        ),
+      );
       _log.error('Erro buscar lista veículos', e, s);
     }
   }
@@ -49,11 +54,11 @@ class VehiclesRegisterBloc
     Emitter<VehiclesRegisterState> emit,
   ) async {
     try {
-      emit(VehiclesRegisterLoading());
+      emit(state.copyWith(status: VehiclesRegisterStatus.loading));
       await _vehiclesRegisterRepository.update(event.vehiclesModel);
-      emit(VehiclesRegisterSuccess());
+      emit(state.copyWith(status: VehiclesRegisterStatus.success));
     } on Exception catch (e, s) {
-      emit(VehiclesRegisterFailure());
+      emit(state.copyWith(status: VehiclesRegisterStatus.failure));
       _log.error('Erro ao atualizar veículo', e, s);
     }
   }
@@ -63,11 +68,11 @@ class VehiclesRegisterBloc
     Emitter<VehiclesRegisterState> emit,
   ) async {
     try {
-      emit(VehiclesRegisterDeleting());
+      emit(state.copyWith(status: VehiclesRegisterStatus.loading));
       await _vehiclesRegisterRepository.delete(event.id);
-      emit(VehiclesRegisterDeletingSuccess());
+      emit(state.copyWith(status: VehiclesRegisterStatus.success));
     } on Exception catch (e, s) {
-      emit(VehiclesRegisterDeletingFailure());
+      emit(state.copyWith(status: VehiclesRegisterStatus.failure));
       _log.error('Erro ao deletar veículo', e, s);
     }
   }

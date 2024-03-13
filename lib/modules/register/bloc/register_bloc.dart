@@ -13,7 +13,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     required Log log,
   })  : _registerService = registerService,
         _log = log,
-        super(RegisterInitial()) {
+        super(const RegisterState.initial()) {
     on<RegisterUserEvent>(_register);
   }
 
@@ -25,7 +25,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     Emitter<RegisterState> emit,
   ) async {
     try {
-      emit(RegisterLoading());
+      emit(
+        state.copyWith(
+          status: RegisterStatus.loading,
+        ),
+      );
       final userModel = UserModel(
         name: event.name,
         cpf: event.cpf,
@@ -33,12 +37,18 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       );
       await _registerService.register(userModel);
       emit(
-        RegisterSuccess(),
+        state.copyWith(
+          status: RegisterStatus.success,
+        ),
       );
     } on Exception catch (e, s) {
-      emit(RegisterFailure());
+      emit(
+        state.copyWith(
+          status: RegisterStatus.failure,
+          error: e,
+        ),
+      );
       _log.error('Erro ao registrar o usuário', e, s);
-      // throw Failure(message: 'Erro ao registrar o usuário');
     }
   }
 }

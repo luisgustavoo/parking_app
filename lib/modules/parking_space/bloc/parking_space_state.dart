@@ -1,22 +1,21 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'parking_space_bloc.dart';
 
 extension PatternMatch on ParkingSpaceState {
   Widget match({
     required Widget Function() onInitial,
     required Widget Function() onLoading,
-    required Widget Function(List<ParkingSpaceModel> vehicleList) onSuccess,
+    required Widget Function() onSuccess,
     required Widget Function() onFailure,
   }) {
-    final state = this;
-
-    switch (state) {
-      case ParkingSpaceInitial():
+    switch (status) {
+      case ParkingSpaceStatus.initial:
         return onInitial();
-      case ParkingSpaceLoading():
+      case ParkingSpaceStatus.loading:
         return onLoading();
-      case ParkingSpaceSuccess():
-        return onSuccess(state.parkingSpaceList);
-      case ParkingSpaceFailure():
+      case ParkingSpaceStatus.success:
+        return onSuccess();
+      case ParkingSpaceStatus.failure:
         return onFailure();
       default:
         return const SizedBox.shrink();
@@ -24,23 +23,34 @@ extension PatternMatch on ParkingSpaceState {
   }
 }
 
-sealed class ParkingSpaceState extends Equatable {
-  const ParkingSpaceState();
+enum ParkingSpaceStatus { initial, loading, success, failure }
 
-  @override
-  List<Object> get props => [];
-}
-
-final class ParkingSpaceInitial extends ParkingSpaceState {}
-
-final class ParkingSpaceLoading extends ParkingSpaceState {}
-
-final class ParkingSpaceSuccess extends ParkingSpaceState {
-  const ParkingSpaceSuccess({
-    required this.parkingSpaceList,
+class ParkingSpaceState extends Equatable {
+  const ParkingSpaceState._({
+    required this.status,
+    this.parkingSpaceList,
+    this.error,
   });
 
-  final List<ParkingSpaceModel> parkingSpaceList;
-}
+  const ParkingSpaceState.initial()
+      : this._(status: ParkingSpaceStatus.initial);
 
-final class ParkingSpaceFailure extends ParkingSpaceState {}
+  final ParkingSpaceStatus status;
+  final List<ParkingSpaceModel>? parkingSpaceList;
+  final Exception? error;
+
+  @override
+  List<Object?> get props => [status, parkingSpaceList, error];
+
+  ParkingSpaceState copyWith({
+    ParkingSpaceStatus? status,
+    List<ParkingSpaceModel>? parkingSpaceList,
+    Exception? error,
+  }) {
+    return ParkingSpaceState._(
+      status: status ?? this.status,
+      parkingSpaceList: parkingSpaceList ?? this.parkingSpaceList,
+      error: error,
+    );
+  }
+}

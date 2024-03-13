@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
-import 'package:parking_app/core/helpers/calculate.dart';
+import 'package:parking_app/core/helpers/utils.dart';
 import 'package:parking_app/core/rest_client/dio_rest_client.dart';
 import 'package:parking_app/core/rest_client/logs/log_impl.dart';
 import 'package:parking_app/core/ui/extensions/theme_extension.dart';
@@ -113,7 +112,11 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
         return state.match(
           onInitial: _buildInitialState,
           onLoading: _buildLoadingState,
-          onSuccess: _buildSuccessTicket,
+          onSuccess: () {
+            return _buildSuccessTicket(
+              ticket: state.ticket,
+            );
+          },
           onFailure: _buildFailureState,
         );
       },
@@ -130,7 +133,9 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
               return state.match(
                 onInitial: _buildInitialState,
                 onLoading: _buildLoadingState,
-                onSuccess: _buildSuccessState,
+                onSuccess: () {
+                  return _buildSuccessState(state.vehicleList);
+                },
                 onFailure: _buildFailureState,
               );
             },
@@ -179,8 +184,8 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
         child: ParkingLoadingWidget(),
       );
 
-  Widget _buildSuccessState(List<VehiclesModel> vehiclesList) {
-    final filteredList = vehiclesList
+  Widget _buildSuccessState(List<VehiclesModel>? vehiclesList) {
+    final filteredList = vehiclesList!
         .where(
           (vehicle) => vehicle.type == widget.parkingSpaceModel.type,
         )
@@ -219,7 +224,6 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
   }
 
   Widget _buildSuccessTicket({
-    List<TicketModel>? ticketList,
     TicketModel? ticket,
   }) {
     if (ticket == null) {
@@ -229,17 +233,11 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
     final valuePerHour =
         context.read<ParkingBloc>().parkingModel?.hourlyRate ?? 0;
 
-    final formatDate = DateFormat(
-      'dd/MM/yyyy hh:mm:ss',
-    );
-
-    final initialDate = formatDate.format(ticket.entryDataTime);
-
-    final time = Calculate.differenceInTime(
+    final time = Utils.differenceInTime(
       initialDate: ticket.entryDataTime,
     );
 
-    final amountPaid = Calculate.amountPaid(
+    final amountPaid = Utils.amountPaid(
       valuePerHour: valuePerHour,
       minutes: DateTime.now().difference(ticket.entryDataTime).inMinutes,
     );
@@ -279,7 +277,9 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
               ],
             ),
             Gap.vertical(16),
-            Text('Data Entrada: $initialDate '),
+            Text('Data Entrada: ${Utils.dateFormat(
+              date: ticket.entryDataTime,
+            )} '),
             Text(
               'Tempo: $time hs ',
             ),
@@ -288,22 +288,14 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Valor: R\$${NumberFormat.currency(
-                    locale: 'pt-BR',
-                    name: '',
-                    decimalDigits: 2,
-                  ).format(amountPaid)} ',
+                  'Valor: ${Utils.currencyFormat(value: amountPaid)}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 25,
                   ),
                 ),
                 Text(
-                  'Valor por hora (R\$${NumberFormat.currency(
-                    locale: 'pt-BR',
-                    name: '',
-                    decimalDigits: 2,
-                  ).format(valuePerHour)})',
+                  'Valor por hora (${Utils.currencyFormat(value: valuePerHour)})',
                   style: const TextStyle(
                     color: Colors.grey,
                     fontSize: 10,
@@ -400,6 +392,13 @@ class _ParkingSpaceTicketState extends State<ParkingSpaceTicket> {
       context.read<TicketRegisterBloc>().add(
             TicketRegisterTicketEvent(
               ticketModel: ticketModel,
+            ),
+          );
+      final date = context.read<TicketBloc>().filteredDate;
+
+      context.read<TicketBloc>().add(
+            TicketFindByDateEvent(
+              date: date ?? DateTime.now(),
             ),
           );
     }

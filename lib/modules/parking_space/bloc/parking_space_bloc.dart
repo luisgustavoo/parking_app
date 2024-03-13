@@ -14,7 +14,7 @@ class ParkingSpaceBloc extends Bloc<ParkingSpaceEvent, ParkingSpaceState> {
     required Log log,
   })  : _parkingSpaceRepository = parkingSpaceRepository,
         _log = log,
-        super(ParkingSpaceInitial()) {
+        super(const ParkingSpaceState.initial()) {
     on<ParkingSpaceFindAllEvent>(_findAll);
     on<ParkingSpaceUpdateEvent>(_update);
   }
@@ -27,11 +27,25 @@ class ParkingSpaceBloc extends Bloc<ParkingSpaceEvent, ParkingSpaceState> {
     Emitter<ParkingSpaceState> emit,
   ) async {
     try {
-      emit(ParkingSpaceLoading());
+      emit(
+        state.copyWith(
+          status: ParkingSpaceStatus.loading,
+        ),
+      );
       final parkingSpaceList = await _parkingSpaceRepository.findAll();
-      emit(ParkingSpaceSuccess(parkingSpaceList: parkingSpaceList));
+      emit(
+        state.copyWith(
+          status: ParkingSpaceStatus.success,
+          parkingSpaceList: parkingSpaceList,
+        ),
+      );
     } on Exception catch (e, s) {
-      emit(ParkingSpaceFailure());
+      emit(
+        state.copyWith(
+          status: ParkingSpaceStatus.failure,
+          error: e,
+        ),
+      );
       _log.error('Erro buscar vagas do estacionamento', e, s);
     }
   }
@@ -43,7 +57,11 @@ class ParkingSpaceBloc extends Bloc<ParkingSpaceEvent, ParkingSpaceState> {
     try {
       await _parkingSpaceRepository.update(id: event.id, data: event.data);
     } on Exception catch (e, s) {
-      emit(ParkingSpaceFailure());
+      emit(
+        state.copyWith(
+          status: ParkingSpaceStatus.failure,
+        ),
+      );
       _log.error('Erro ao atualizar vaga do estacionamento', e, s);
     }
   }

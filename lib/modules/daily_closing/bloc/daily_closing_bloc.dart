@@ -15,7 +15,7 @@ class DailyClosingBloc extends Bloc<DailyClosingEvent, DailyClosingState> {
     required Log log,
   })  : _dailyClosingRepository = dailyClosingRepository,
         _log = log,
-        super(DailyClosingInitial()) {
+        super(DailyClosingState.initial()) {
     on<DailyClosingRegisterEvent>(_register);
     on<DailyClosingFindAllEvent>(_findAll);
   }
@@ -29,7 +29,7 @@ class DailyClosingBloc extends Bloc<DailyClosingEvent, DailyClosingState> {
     Emitter<DailyClosingState> emit,
   ) async {
     try {
-      emit(DailyClosingLoading());
+      emit(state.copyWith(status: DailyClosingStatus.loading));
       var sum = 0.0;
 
       dailyClosingList = await _dailyClosingRepository.findAll();
@@ -40,8 +40,8 @@ class DailyClosingBloc extends Bloc<DailyClosingEvent, DailyClosingState> {
         );
 
         if (exist) {
-          emit(DailyClosingFailure());
-          add(DailyClosingFindAllEvent());
+          emit(state.copyWith(status: DailyClosingStatus.failure));
+
           return;
         }
       }
@@ -54,9 +54,15 @@ class DailyClosingBloc extends Bloc<DailyClosingEvent, DailyClosingState> {
         date: DateTime.now(),
       );
       await _dailyClosingRepository.register(dailyClosing);
-      emit(const DailyClosingSuccess());
+      emit(state.copyWith(status: DailyClosingStatus.success));
+      add(DailyClosingFindAllEvent());
     } on Exception catch (e, s) {
-      emit(DailyClosingFailure());
+      emit(
+        state.copyWith(
+          status: DailyClosingStatus.failure,
+          error: e,
+        ),
+      );
       _log.error('Erro ao realizar fechamento diário', e, s);
     }
   }
@@ -66,11 +72,21 @@ class DailyClosingBloc extends Bloc<DailyClosingEvent, DailyClosingState> {
     Emitter<DailyClosingState> emit,
   ) async {
     try {
-      emit(DailyClosingLoading());
+      emit(state.copyWith(status: DailyClosingStatus.loading));
       dailyClosingList = await _dailyClosingRepository.findAll();
-      emit(DailyClosingSuccess(dailyClosingList: dailyClosingList));
+      emit(
+        state.copyWith(
+          status: DailyClosingStatus.success,
+          dailyClosingList: dailyClosingList,
+        ),
+      );
     } on Exception catch (e, s) {
-      emit(DailyClosingFailure());
+      emit(
+        state.copyWith(
+          status: DailyClosingStatus.failure,
+          error: e,
+        ),
+      );
       _log.error('Erro ao listar fechamento diário', e, s);
     }
   }

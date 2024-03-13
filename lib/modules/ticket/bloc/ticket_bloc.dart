@@ -14,7 +14,7 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
     required Log log,
   })  : _ticketRepository = ticketRepository,
         _log = log,
-        super(TicketInitial()) {
+        super(TicketState.initial()) {
     on<TicketFindByParkingSpaceIdEvent>(_findByParkingSpaceId);
     on<TicketFindAllEvent>(_findAll);
     on<TicketFindByDateEvent>(_findByDate);
@@ -30,11 +30,21 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
     Emitter<TicketState> emit,
   ) async {
     try {
-      emit(TicketLoading());
+      emit(state.copyWith(status: TicketStatus.loading));
       final ticket = await _ticketRepository.findByParkingSpaceId(event.id);
-      emit(TicketSuccess(ticket: ticket));
+      emit(
+        state.copyWith(
+          status: TicketStatus.success,
+          ticket: ticket,
+        ),
+      );
     } on Exception catch (e, s) {
-      emit(TicketFailure());
+      emit(
+        state.copyWith(
+          status: TicketStatus.failure,
+          error: e,
+        ),
+      );
       _log.error('Erro ao buscar ticket', e, s);
     }
   }
@@ -44,11 +54,21 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
     Emitter<TicketState> emit,
   ) async {
     try {
-      emit(TicketLoading());
+      emit(state.copyWith(status: TicketStatus.loading));
       ticketList = await _ticketRepository.findAll();
-      emit(TicketSuccess(ticketList: ticketList));
+      emit(
+        state.copyWith(
+          status: TicketStatus.success,
+          ticketList: ticketList,
+        ),
+      );
     } on Exception catch (e, s) {
-      emit(TicketFailure());
+      emit(
+        state.copyWith(
+          status: TicketStatus.failure,
+          error: e,
+        ),
+      );
       _log.error('Erro ao buscar ticket', e, s);
     }
   }
@@ -58,16 +78,26 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
     Emitter<TicketState> emit,
   ) async {
     try {
-      emit(TicketLoading());
+      emit(state.copyWith(status: TicketStatus.loading));
       filteredDate = DateTime(
         event.date.year,
         event.date.month,
         event.date.day,
       );
       ticketList = await _ticketRepository.findByDate(filteredDate!);
-      emit(TicketSuccess(ticketList: ticketList));
+      emit(
+        state.copyWith(
+          status: TicketStatus.success,
+          ticketList: ticketList,
+        ),
+      );
     } on Exception catch (e, s) {
-      emit(TicketFailure());
+      emit(
+        state.copyWith(
+          status: TicketStatus.failure,
+          error: e,
+        ),
+      );
       _log.error('Erro ao buscar ticket', e, s);
     }
   }
